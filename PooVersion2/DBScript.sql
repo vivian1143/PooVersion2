@@ -6,65 +6,72 @@ USE academia;
 CREATE TABLE IF NOT EXISTS persona (
   idPersona INT AUTO_INCREMENT PRIMARY KEY,
   nombre VARCHAR(50) NOT NULL,
-  apellido VARCHAR(50) NOT NULL,
-  dni VARCHAR(20),
-  tipoPersona ENUM('ESTUDIANTE','PROFESOR') NOT NULL
+  apellidos VARCHAR(50) NOT NULL,
+  email VARCHAR(100)
 );
 
 -- 3. Crear tabla Estudiante
---    (su PK es la misma que Persona para simular herencia,
---     o podrías tener un ID separado si prefieres).
 CREATE TABLE IF NOT EXISTS estudiante (
   idEstudiante INT PRIMARY KEY,
-  codigoEstudiante VARCHAR(20) NOT NULL,
+  codigo DOUBLE NOT NULL,
+  programa_id INT,
+  activo BOOLEAN NOT NULL,
+  promedio DOUBLE,
   FOREIGN KEY (idEstudiante) REFERENCES persona(idPersona)
 );
 
 -- 4. Crear tabla Profesor
 CREATE TABLE IF NOT EXISTS profesor (
   idProfesor INT PRIMARY KEY,
-  especialidad VARCHAR(100),
+  tipoContrato VARCHAR(50),
   FOREIGN KEY (idProfesor) REFERENCES persona(idPersona)
 );
 
 -- 5. Crear tabla Facultad
 CREATE TABLE IF NOT EXISTS facultad (
   idFacultad INT AUTO_INCREMENT PRIMARY KEY,
-  nombreFacultad VARCHAR(100) NOT NULL
+  nombre VARCHAR(100) NOT NULL,
+  decano_id INT,
+  FOREIGN KEY (decano_id) REFERENCES persona(idPersona)
 );
 
 -- 6. Crear tabla Programa
 CREATE TABLE IF NOT EXISTS programa (
   idPrograma INT AUTO_INCREMENT PRIMARY KEY,
-  nombrePrograma VARCHAR(100) NOT NULL,
-  idFacultad INT NOT NULL,
-  FOREIGN KEY (idFacultad) REFERENCES facultad(idFacultad)
+  nombre VARCHAR(100) NOT NULL,
+  duracion DOUBLE NOT NULL,
+  registro DATE,
+  facultad_id INT,
+  FOREIGN KEY (facultad_id) REFERENCES facultad(idFacultad)
 );
 
 -- 7. Crear tabla Curso
 CREATE TABLE IF NOT EXISTS curso (
   idCurso INT AUTO_INCREMENT PRIMARY KEY,
-  nombreCurso VARCHAR(100) NOT NULL,
-  codigoCurso VARCHAR(20) NOT NULL,
-  idPrograma INT NOT NULL,
-  FOREIGN KEY (idPrograma) REFERENCES programa(idPrograma)
+  nombre VARCHAR(100) NOT NULL,
+  programa_id INT,
+  activo BOOLEAN NOT NULL,
+  FOREIGN KEY (programa_id) REFERENCES programa(idPrograma)
 );
 
--- 8. Tabla intermedia para CursoProfesor (muchos a muchos)
+-- 8. Crear tabla CursoProfesor (relación muchos a muchos)
 CREATE TABLE IF NOT EXISTS curso_profesor (
   idCurso INT NOT NULL,
   idProfesor INT NOT NULL,
+  año INT NOT NULL,
+  semestre INT NOT NULL,
   PRIMARY KEY (idCurso, idProfesor),
   FOREIGN KEY (idCurso) REFERENCES curso(idCurso),
   FOREIGN KEY (idProfesor) REFERENCES profesor(idProfesor)
 );
 
--- 9. Tabla Inscripcion (relación entre Estudiante y Curso, por ejemplo)
+-- 9. Crear tabla Inscripcion (relación entre Estudiante y Curso)
 CREATE TABLE IF NOT EXISTS inscripcion (
   idInscripcion INT AUTO_INCREMENT PRIMARY KEY,
-  fechaInscripcion DATE NOT NULL,
-  idEstudiante INT NOT NULL,
-  idCurso INT NOT NULL,
-  FOREIGN KEY (idEstudiante) REFERENCES estudiante(idEstudiante),
-  FOREIGN KEY (idCurso) REFERENCES curso(idCurso)
+  curso_id INT NOT NULL,
+  año INT NOT NULL,
+  semestre INT NOT NULL,
+  estudiante_id INT NOT NULL,
+  FOREIGN KEY (curso_id) REFERENCES curso(idCurso),
+  FOREIGN KEY (estudiante_id) REFERENCES estudiante(idEstudiante)
 );
