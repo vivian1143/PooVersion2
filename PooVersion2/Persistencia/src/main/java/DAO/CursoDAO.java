@@ -3,6 +3,7 @@ package DAO;
 import Interfaces.ICursoDAO;
 import Modelos.Curso;
 import Modelos.Programa;
+import DAO.ValidationException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,8 @@ public class CursoDAO implements ICursoDAO {
     private static final String DELETE_CURSO_SQL = "DELETE FROM curso WHERE idCurso = ?";
 
     @Override
-    public void addCurso(Curso curso) {
+    public void addCurso(Curso curso) throws ValidationException {
+        validateCurso(curso);
         try (Connection connection = ConexionMySQL.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_CURSO_SQL)) {
             preparedStatement.setString(1, curso.getNombre());
@@ -38,7 +40,6 @@ public class CursoDAO implements ICursoDAO {
                 String nombre = rs.getString("nombre");
                 int programaId = rs.getInt("programa_id");
                 boolean activo = rs.getBoolean("activo");
-                // Assuming ProgramaDAO and Programa class are implemented
                 Programa programa = new ProgramaDAO().getProgramaById(programaId);
                 curso = new Curso(id, nombre, programa, activo);
             }
@@ -59,7 +60,6 @@ public class CursoDAO implements ICursoDAO {
                 String nombre = rs.getString("nombre");
                 int programaId = rs.getInt("programa_id");
                 boolean activo = rs.getBoolean("activo");
-                // Assuming ProgramaDAO and Programa class are implemented
                 Programa programa = new ProgramaDAO().getProgramaById(programaId);
                 cursos.add(new Curso(id, nombre, programa, activo));
             }
@@ -70,7 +70,8 @@ public class CursoDAO implements ICursoDAO {
     }
 
     @Override
-    public void updateCurso(Curso curso) {
+    public void updateCurso(Curso curso) throws ValidationException {
+        validateCurso(curso);
         try (Connection connection = ConexionMySQL.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_CURSO_SQL)) {
             preparedStatement.setString(1, curso.getNombre());
@@ -91,6 +92,15 @@ public class CursoDAO implements ICursoDAO {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             printSQLException(e);
+        }
+    }
+
+    private void validateCurso(Curso curso) throws ValidationException {
+        if (curso.getNombre() == null || curso.getNombre().isEmpty()) {
+            throw new ValidationException("El nombre no puede estar vacío");
+        }
+        if (curso.getPrograma() == null || curso.getPrograma().getId() == null) {
+            throw new ValidationException("El programa no puede estar vacío");
         }
     }
 

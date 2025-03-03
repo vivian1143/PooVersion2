@@ -15,7 +15,8 @@ public class EstudianteDAO implements IEstudianteDAO {
     private static final String DELETE_ESTUDIANTE_SQL = "DELETE FROM estudiante WHERE idEstudiante = ?";
 
     @Override
-    public void addEstudiante(Estudiante estudiante) {
+    public void addEstudiante(Estudiante estudiante) throws ValidationException {
+        validateEstudiante(estudiante);
         try (Connection connection = ConexionMySQL.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_ESTUDIANTE_SQL)) {
             preparedStatement.setDouble(1, estudiante.getCodigo());
@@ -40,7 +41,6 @@ public class EstudianteDAO implements IEstudianteDAO {
                 int programaId = rs.getInt("programa_id");
                 boolean activo = rs.getBoolean("activo");
                 double promedio = rs.getDouble("promedio");
-                // Assuming ProgramaDAO and Programa class are implemented
                 Programa programa = new ProgramaDAO().getProgramaById(programaId);
                 estudiante = new Estudiante(codigo, programa, activo, promedio);
             }
@@ -62,7 +62,6 @@ public class EstudianteDAO implements IEstudianteDAO {
                 int programaId = rs.getInt("programa_id");
                 boolean activo = rs.getBoolean("activo");
                 double promedio = rs.getDouble("promedio");
-                // Assuming ProgramaDAO and Programa class are implemented
                 Programa programa = new ProgramaDAO().getProgramaById(programaId);
                 estudiantes.add(new Estudiante(codigo, programa, activo, promedio));
             }
@@ -73,14 +72,15 @@ public class EstudianteDAO implements IEstudianteDAO {
     }
 
     @Override
-    public void updateEstudiante(Estudiante estudiante) {
+    public void updateEstudiante(Estudiante estudiante) throws ValidationException {
+        validateEstudiante(estudiante);
         try (Connection connection = ConexionMySQL.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ESTUDIANTE_SQL)) {
             preparedStatement.setDouble(1, estudiante.getCodigo());
             preparedStatement.setInt(2, estudiante.getPrograma().getId().intValue());
             preparedStatement.setBoolean(3, estudiante.isActivo());
             preparedStatement.setDouble(4, estudiante.getPromedio());
-            preparedStatement.setInt(5, (int)estudiante.getCodigo());
+            preparedStatement.setInt(5, (int) estudiante.getCodigo());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             printSQLException(e);
@@ -95,6 +95,18 @@ public class EstudianteDAO implements IEstudianteDAO {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             printSQLException(e);
+        }
+    }
+
+    private void validateEstudiante(Estudiante estudiante) throws ValidationException {
+        if (estudiante.getCodigo() <= 0) {
+            throw new ValidationException("El código debe ser un número positivo");
+        }
+        if (estudiante.getPrograma() == null || estudiante.getPrograma().getId() == null) {
+            throw new ValidationException("El programa no puede estar vacío");
+        }
+        if (estudiante.getPromedio() < 0.0 || estudiante.getPromedio() > 5.0) {
+            throw new ValidationException("El promedio debe estar entre 0.0 y 5.0");
         }
     }
 

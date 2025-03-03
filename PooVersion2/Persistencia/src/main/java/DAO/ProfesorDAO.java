@@ -14,7 +14,8 @@ public class ProfesorDAO implements IProfesorDAO {
     private static final String DELETE_PROFESOR_SQL = "DELETE FROM profesor WHERE idProfesor = ?";
 
     @Override
-    public void addProfesor(Profesor profesor) {
+    public void addProfesor(Profesor profesor) throws ValidationException {
+        validateProfesor(profesor);
         try (Connection connection = ConexionMySQL.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_PROFESOR_SQL)) {
             preparedStatement.setString(1, profesor.getTipoContrato());
@@ -58,11 +59,11 @@ public class ProfesorDAO implements IProfesorDAO {
     }
 
     @Override
-    public void updateProfesor(Profesor profesor) {
+    public void updateProfesor(Profesor profesor) throws ValidationException {
+        validateProfesor(profesor);
         try (Connection connection = ConexionMySQL.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_PROFESOR_SQL)) {
             preparedStatement.setString(1, profesor.getTipoContrato());
-            preparedStatement.setInt(2, profesor.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             printSQLException(e);
@@ -77,6 +78,12 @@ public class ProfesorDAO implements IProfesorDAO {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             printSQLException(e);
+        }
+    }
+
+    private void validateProfesor(Profesor profesor) throws ValidationException {
+        if (profesor.getTipoContrato() == null || profesor.getTipoContrato().isEmpty()) {
+            throw new ValidationException("El tipo de contrato no puede estar vacío");
         }
     }
 

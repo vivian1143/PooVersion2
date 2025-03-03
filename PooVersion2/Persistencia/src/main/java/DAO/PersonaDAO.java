@@ -2,9 +2,11 @@ package DAO;
 
 import Interfaces.IPersonaDAO;
 import Modelos.Persona;
+import DAO.ValidationException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class PersonaDAO implements IPersonaDAO {
     private static final String INSERT_PERSONA_SQL = "INSERT INTO persona (nombre, apellidos, email) VALUES (?, ?, ?)";
@@ -13,8 +15,11 @@ public class PersonaDAO implements IPersonaDAO {
     private static final String UPDATE_PERSONA_SQL = "UPDATE persona SET nombre = ?, apellidos = ?, email = ? WHERE idPersona = ?";
     private static final String DELETE_PERSONA_SQL = "DELETE FROM persona WHERE idPersona = ?";
 
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@(.+)$");
+
     @Override
-    public void addPersona(Persona persona) {
+    public void addPersona(Persona persona) throws ValidationException {
+        validatePersona(persona);
         try (Connection connection = ConexionMySQL.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_PERSONA_SQL)) {
             preparedStatement.setString(1, persona.getNombre());
@@ -65,13 +70,14 @@ public class PersonaDAO implements IPersonaDAO {
     }
 
     @Override
-    public void updatePersona(Persona persona) {
+    public void updatePersona(Persona persona) throws ValidationException {
+        validatePersona(persona);
         try (Connection connection = ConexionMySQL.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_PERSONA_SQL)) {
             preparedStatement.setString(1, persona.getNombre());
             preparedStatement.setString(2, persona.getApellidos());
             preparedStatement.setString(3, persona.getEmail());
-            preparedStatement.setDouble(4, persona.getId());
+            preparedStatement.setInt(4, (int) persona.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             printSQLException(e);
@@ -86,6 +92,18 @@ public class PersonaDAO implements IPersonaDAO {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             printSQLException(e);
+        }
+    }
+
+    private void validatePersona(Persona persona) throws ValidationException {
+        if (persona.getNombre() == null || persona.getNombre().isEmpty()) {
+            throw new ValidationException("El nombre no puede estar vacío");
+        }
+        if (persona.getApellidos() == null || persona.getApellidos().isEmpty()) {
+            throw new ValidationException("Los apellidos no pueden estar vacíos");
+        }
+        if (persona.getEmail() == null || !EMAIL_PATTERN.matcher(persona.getEmail()).matches()) {
+            throw new ValidationException("El correo electrónico no es válido");
         }
     }
 

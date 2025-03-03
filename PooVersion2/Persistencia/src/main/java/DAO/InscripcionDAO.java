@@ -4,6 +4,7 @@ import Interfaces.IInscripcionDAO;
 import Modelos.Inscripcion;
 import Modelos.Curso;
 import Modelos.Estudiante;
+import DAO.ValidationException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +17,14 @@ public class InscripcionDAO implements IInscripcionDAO {
     private static final String DELETE_INSCRIPCION_SQL = "DELETE FROM inscripcion WHERE idInscripcion = ?";
 
     @Override
-    public void addInscripcion(Inscripcion inscripcion) {
+    public void addInscripcion(Inscripcion inscripcion) throws ValidationException {
+        validateInscripcion(inscripcion);
         try (Connection connection = ConexionMySQL.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_INSCRIPCION_SQL)) {
             preparedStatement.setInt(1, inscripcion.getCurso().getId());
             preparedStatement.setInt(2, inscripcion.getAño());
             preparedStatement.setInt(3, inscripcion.getSemestre());
-            preparedStatement.setInt(4, inscripcion.getEstudiante().getId());
+            preparedStatement.setInt(4, (int) inscripcion.getEstudiante().getCodigo());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             printSQLException(e);
@@ -41,7 +43,6 @@ public class InscripcionDAO implements IInscripcionDAO {
                 int año = rs.getInt("año");
                 int semestre = rs.getInt("semestre");
                 int estudianteId = rs.getInt("estudiante_id");
-                // Assuming CursoDAO and EstudianteDAO classes are implemented
                 Curso curso = new CursoDAO().getCursoById(cursoId);
                 Estudiante estudiante = new EstudianteDAO().getEstudianteById(estudianteId);
                 inscripcion = new Inscripcion(curso, año, semestre, estudiante);
@@ -64,7 +65,6 @@ public class InscripcionDAO implements IInscripcionDAO {
                 int año = rs.getInt("año");
                 int semestre = rs.getInt("semestre");
                 int estudianteId = rs.getInt("estudiante_id");
-                // Assuming CursoDAO and EstudianteDAO classes are implemented
                 Curso curso = new CursoDAO().getCursoById(cursoId);
                 Estudiante estudiante = new EstudianteDAO().getEstudianteById(estudianteId);
                 inscripciones.add(new Inscripcion(curso, año, semestre, estudiante));
@@ -76,14 +76,14 @@ public class InscripcionDAO implements IInscripcionDAO {
     }
 
     @Override
-    public void updateInscripcion(Inscripcion inscripcion) {
+    public void updateInscripcion(Inscripcion inscripcion) throws ValidationException {
+        validateInscripcion(inscripcion);
         try (Connection connection = ConexionMySQL.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_INSCRIPCION_SQL)) {
             preparedStatement.setInt(1, inscripcion.getCurso().getId());
             preparedStatement.setInt(2, inscripcion.getAño());
             preparedStatement.setInt(3, inscripcion.getSemestre());
-            preparedStatement.setInt(4, inscripcion.getEstudiante().getId());
-            preparedStatement.setInt(5, inscripcion.getId());
+            preparedStatement.setInt(4, (int) inscripcion.getEstudiante().getCodigo());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             printSQLException(e);
@@ -98,6 +98,21 @@ public class InscripcionDAO implements IInscripcionDAO {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             printSQLException(e);
+        }
+    }
+
+    private void validateInscripcion(Inscripcion inscripcion) throws ValidationException {
+        if (inscripcion.getCurso() == null || inscripcion.getCurso().getId() == null) {
+            throw new ValidationException("El curso no puede estar vacío");
+        }
+        if (inscripcion.getAño() <= 0) {
+            throw new ValidationException("El año debe ser un número positivo");
+        }
+        if (inscripcion.getSemestre() <= 0) {
+            throw new ValidationException("El semestre debe ser un número positivo");
+        }
+        if (inscripcion.getEstudiante() == null || inscripcion.getEstudiante().getCodigo() == 0.0) {
+            throw new ValidationException("El estudiante no puede estar vacío");
         }
     }
 

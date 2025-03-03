@@ -15,7 +15,8 @@ public class FacultadDAO implements IFacultadDAO {
     private static final String DELETE_FACULTAD_SQL = "DELETE FROM facultad WHERE idFacultad = ?";
 
     @Override
-    public void addFacultad(Facultad facultad) {
+    public void addFacultad(Facultad facultad) throws ValidationException {
+        validateFacultad(facultad);
         try (Connection connection = ConexionMySQL.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_FACULTAD_SQL)) {
             preparedStatement.setString(1, facultad.getNombre());
@@ -36,7 +37,6 @@ public class FacultadDAO implements IFacultadDAO {
             if (rs.next()) {
                 String nombre = rs.getString("nombre");
                 int decanoId = rs.getInt("decano_id");
-                // Assuming PersonaDAO and Persona class are implemented
                 Persona decano = new PersonaDAO().getPersonaById(decanoId);
                 facultad = new Facultad(id, nombre, decano);
             }
@@ -56,7 +56,6 @@ public class FacultadDAO implements IFacultadDAO {
                 int id = rs.getInt("idFacultad");
                 String nombre = rs.getString("nombre");
                 int decanoId = rs.getInt("decano_id");
-                // Assuming PersonaDAO and Persona class are implemented
                 Persona decano = new PersonaDAO().getPersonaById(decanoId);
                 facultades.add(new Facultad(id, nombre, decano));
             }
@@ -67,7 +66,8 @@ public class FacultadDAO implements IFacultadDAO {
     }
 
     @Override
-    public void updateFacultad(Facultad facultad) {
+    public void updateFacultad(Facultad facultad) throws ValidationException {
+        validateFacultad(facultad);
         try (Connection connection = ConexionMySQL.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_FACULTAD_SQL)) {
             preparedStatement.setString(1, facultad.getNombre());
@@ -87,6 +87,15 @@ public class FacultadDAO implements IFacultadDAO {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             printSQLException(e);
+        }
+    }
+
+    private void validateFacultad(Facultad facultad) throws ValidationException {
+        if (facultad.getNombre() == null || facultad.getNombre().isEmpty()) {
+            throw new ValidationException("El nombre no puede estar vacío");
+        }
+        if (facultad.getDecano() == null || facultad.getDecano().getId() == 0.0) {
+            throw new ValidationException("El decano no puede estar vacío");
         }
     }
 

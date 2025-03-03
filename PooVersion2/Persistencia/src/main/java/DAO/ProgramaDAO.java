@@ -3,6 +3,7 @@ package DAO;
 import Interfaces.IProgramaDAO;
 import Modelos.Programa;
 import Modelos.Facultad;
+import DAO.ValidationException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,8 @@ public class ProgramaDAO implements IProgramaDAO {
     private static final String DELETE_PROGRAMA_SQL = "DELETE FROM programa WHERE idPrograma = ?";
 
     @Override
-    public void addPrograma(Programa programa) {
+    public void addPrograma(Programa programa) throws ValidationException {
+        validatePrograma(programa);
         try (Connection connection = ConexionMySQL.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_PROGRAMA_SQL)) {
             preparedStatement.setString(1, programa.getNombre());
@@ -40,10 +42,8 @@ public class ProgramaDAO implements IProgramaDAO {
                 double duracion = rs.getDouble("duracion");
                 Date registro = rs.getDate("registro");
                 int facultadId = rs.getInt("facultad_id");
-                // Assuming FacultadDAO and Facultad class are implemented
                 Facultad facultad = new FacultadDAO().getFacultadById(facultadId);
                 programa = new Programa((double) id, nombre, duracion, registro, facultad);
-
             }
         } catch (SQLException e) {
             printSQLException(e);
@@ -63,9 +63,8 @@ public class ProgramaDAO implements IProgramaDAO {
                 double duracion = rs.getDouble("duracion");
                 Date registro = rs.getDate("registro");
                 int facultadId = rs.getInt("facultad_id");
-                // Assuming FacultadDAO and Facultad class are implemented
                 Facultad facultad = new FacultadDAO().getFacultadById(facultadId);
-                programas.add(new Programa((double)id, nombre, duracion, registro, facultad));
+                programas.add(new Programa((double) id, nombre, duracion, registro, facultad));
             }
         } catch (SQLException e) {
             printSQLException(e);
@@ -74,7 +73,8 @@ public class ProgramaDAO implements IProgramaDAO {
     }
 
     @Override
-    public void updatePrograma(Programa programa) {
+    public void updatePrograma(Programa programa) throws ValidationException {
+        validatePrograma(programa);
         try (Connection connection = ConexionMySQL.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_PROGRAMA_SQL)) {
             preparedStatement.setString(1, programa.getNombre());
@@ -96,6 +96,18 @@ public class ProgramaDAO implements IProgramaDAO {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             printSQLException(e);
+        }
+    }
+
+    private void validatePrograma(Programa programa) throws ValidationException {
+        if (programa.getNombre() == null || programa.getNombre().isEmpty()) {
+            throw new ValidationException("El nombre no puede estar vacío");
+        }
+        if (programa.getDuracion() <= 0) {
+            throw new ValidationException("La duración debe ser un número positivo");
+        }
+        if (programa.getFacultad() == null || programa.getFacultad().getId() == 0.0) {
+            throw new ValidationException("La facultad no puede estar vacía");
         }
     }
 
