@@ -1,23 +1,23 @@
 package Modelos;
 
 public class Persona {
-    private double id;
+    private Integer id;
     private String nombre;
     private String apellidos;
     private String email;
 
-    public Persona(double id, String nombre, String apellidos, String email) {
+    public Persona(Integer id, String nombre, String apellidos, String email) {
         this.id = id;
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.email = email;
     }
 
-    public double getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(double id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

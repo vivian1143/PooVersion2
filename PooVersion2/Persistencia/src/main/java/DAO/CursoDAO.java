@@ -3,17 +3,16 @@ package DAO;
 import Interfaces.ICursoDAO;
 import Modelos.Curso;
 import Modelos.Programa;
-import DAO.ValidationException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CursoDAO implements ICursoDAO {
     private static final String INSERT_CURSO_SQL = "INSERT INTO curso (nombre, programa_id, activo) VALUES (?, ?, ?)";
-    private static final String SELECT_CURSO_BY_ID = "SELECT * FROM curso WHERE idCurso = ?";
+    private static final String SELECT_CURSO_BY_ID = "SELECT * FROM curso WHERE id = ?";
     private static final String SELECT_ALL_CURSOS = "SELECT * FROM curso";
-    private static final String UPDATE_CURSO_SQL = "UPDATE curso SET nombre = ?, programa_id = ?, activo = ? WHERE idCurso = ?";
-    private static final String DELETE_CURSO_SQL = "DELETE FROM curso WHERE idCurso = ?";
+    private static final String UPDATE_CURSO_SQL = "UPDATE curso SET nombre = ?, programa_id = ?, activo = ? WHERE id = ?";
+    private static final String DELETE_CURSO_SQL = "DELETE FROM curso WHERE id = ?";
 
     @Override
     public void addCurso(Curso curso) throws ValidationException {
@@ -56,7 +55,7 @@ public class CursoDAO implements ICursoDAO {
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_CURSOS)) {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                int id = rs.getInt("idCurso");
+                int id = rs.getInt("id");
                 String nombre = rs.getString("nombre");
                 int programaId = rs.getInt("programa_id");
                 boolean activo = rs.getBoolean("activo");

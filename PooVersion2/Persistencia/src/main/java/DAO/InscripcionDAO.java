@@ -4,17 +4,16 @@ import Interfaces.IInscripcionDAO;
 import Modelos.Inscripcion;
 import Modelos.Curso;
 import Modelos.Estudiante;
-import DAO.ValidationException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class InscripcionDAO implements IInscripcionDAO {
     private static final String INSERT_INSCRIPCION_SQL = "INSERT INTO inscripcion (curso_id, año, semestre, estudiante_id) VALUES (?, ?, ?, ?)";
-    private static final String SELECT_INSCRIPCION_BY_ID = "SELECT * FROM inscripcion WHERE idInscripcion = ?";
+    private static final String SELECT_INSCRIPCION_BY_ID = "SELECT * FROM inscripcion WHERE id = ?";
     private static final String SELECT_ALL_INSCRIPCIONES = "SELECT * FROM inscripcion";
-    private static final String UPDATE_INSCRIPCION_SQL = "UPDATE inscripcion SET curso_id = ?, año = ?, semestre = ?, estudiante_id = ? WHERE idInscripcion = ?";
-    private static final String DELETE_INSCRIPCION_SQL = "DELETE FROM inscripcion WHERE idInscripcion = ?";
+    private static final String UPDATE_INSCRIPCION_SQL = "UPDATE inscripcion SET curso_id = ?, año = ?, semestre = ?, estudiante_id = ? WHERE id = ?";
+    private static final String DELETE_INSCRIPCION_SQL = "DELETE FROM inscripcion WHERE id = ?";
 
     @Override
     public void addInscripcion(Inscripcion inscripcion) throws ValidationException {
@@ -24,7 +23,7 @@ public class InscripcionDAO implements IInscripcionDAO {
             preparedStatement.setInt(1, inscripcion.getCurso().getId());
             preparedStatement.setInt(2, inscripcion.getAño());
             preparedStatement.setInt(3, inscripcion.getSemestre());
-            preparedStatement.setInt(4, (int) inscripcion.getEstudiante().getCodigo());
+            preparedStatement.setInt(4, inscripcion.getEstudiante().getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             printSQLException(e);
@@ -45,7 +44,7 @@ public class InscripcionDAO implements IInscripcionDAO {
                 int estudianteId = rs.getInt("estudiante_id");
                 Curso curso = new CursoDAO().getCursoById(cursoId);
                 Estudiante estudiante = new EstudianteDAO().getEstudianteById(estudianteId);
-                inscripcion = new Inscripcion(curso, año, semestre, estudiante);
+                inscripcion = new Inscripcion(id, curso, año, semestre, estudiante);
             }
         } catch (SQLException e) {
             printSQLException(e);
@@ -60,14 +59,14 @@ public class InscripcionDAO implements IInscripcionDAO {
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_INSCRIPCIONES)) {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                int id = rs.getInt("idInscripcion");
+                int id = rs.getInt("id");
                 int cursoId = rs.getInt("curso_id");
                 int año = rs.getInt("año");
                 int semestre = rs.getInt("semestre");
                 int estudianteId = rs.getInt("estudiante_id");
                 Curso curso = new CursoDAO().getCursoById(cursoId);
                 Estudiante estudiante = new EstudianteDAO().getEstudianteById(estudianteId);
-                inscripciones.add(new Inscripcion(curso, año, semestre, estudiante));
+                inscripciones.add(new Inscripcion(id, curso, año, semestre, estudiante));
             }
         } catch (SQLException e) {
             printSQLException(e);
@@ -83,7 +82,8 @@ public class InscripcionDAO implements IInscripcionDAO {
             preparedStatement.setInt(1, inscripcion.getCurso().getId());
             preparedStatement.setInt(2, inscripcion.getAño());
             preparedStatement.setInt(3, inscripcion.getSemestre());
-            preparedStatement.setInt(4, (int) inscripcion.getEstudiante().getCodigo());
+            preparedStatement.setInt(4, inscripcion.getEstudiante().getId());
+            preparedStatement.setInt(5, inscripcion.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             printSQLException(e);
@@ -111,7 +111,7 @@ public class InscripcionDAO implements IInscripcionDAO {
         if (inscripcion.getSemestre() <= 0) {
             throw new ValidationException("El semestre debe ser un número positivo");
         }
-        if (inscripcion.getEstudiante() == null || inscripcion.getEstudiante().getCodigo() == 0.0) {
+        if (inscripcion.getEstudiante() == null || inscripcion.getEstudiante().getId() == null) {
             throw new ValidationException("El estudiante no puede estar vacío");
         }
     }

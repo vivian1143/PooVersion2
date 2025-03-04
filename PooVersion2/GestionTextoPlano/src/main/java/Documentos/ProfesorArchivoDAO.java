@@ -7,7 +7,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProfesorArchivoDAO implements IProfesorArchivoDAO{
+public class ProfesorArchivoDAO implements IProfesorArchivoDAO {
     private static final String FILE_PATH = "profesores.txt";
 
     @Override
@@ -18,9 +18,9 @@ public class ProfesorArchivoDAO implements IProfesorArchivoDAO{
     }
 
     @Override
-    public Profesor getProfesorById(double id) {
+    public Profesor getProfesorById(Integer id) {
         for (Profesor p : getAllProfesores()) {
-            if (p.getId() == id) {
+            if (p.getId().equals(id)) {
                 return p;
             }
         }
@@ -35,7 +35,7 @@ public class ProfesorArchivoDAO implements IProfesorArchivoDAO{
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
                 if (data.length == 5) {
-                    double id = Double.parseDouble(data[0]);
+                    Integer id = Integer.parseInt(data[0]);
                     String nombre = data[1];
                     String apellidos = data[2];
                     String email = data[3];
@@ -43,6 +43,7 @@ public class ProfesorArchivoDAO implements IProfesorArchivoDAO{
 
                     Profesor p = new Profesor(id, nombre, apellidos, email, tipoContrato);
                     lista.add(p);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -54,7 +55,7 @@ public class ProfesorArchivoDAO implements IProfesorArchivoDAO{
     public void updateProfesor(Profesor profesor) {
         List<Profesor> lista = getAllProfesores();
         for (int i = 0; i < lista.size(); i++) {
-            if (lista.get(i).getId() == profesor.getId()) {
+            if (lista.get(i).getId().equals(profesor.getId())) {
                 lista.set(i, profesor);
                 break;
             }
@@ -63,16 +64,16 @@ public class ProfesorArchivoDAO implements IProfesorArchivoDAO{
     }
 
     @Override
-    public void deleteProfesor(double id) {
+    public void deleteProfesor(Integer id) {
         List<Profesor> lista = getAllProfesores();
-        lista.removeIf(p -> p.getId() == id);
+        lista.removeIf(p -> p.getId().equals(id));
         saveAllProfesores(lista);
     }
 
     private void saveAllProfesores(List<Profesor> lista) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, false))) {
             for (Profesor p : lista) {
-                writer.write(p.getId() + "," + p.getNombre() + "," + p.getTipoContrato());
+                writer.write(p.getId() + "," + p.getNombre() + "," + p.getApellidos() + "," + p.getEmail() + "," + p.getTipoContrato());
                 writer.newLine();
             }
         } catch (IOException e) {

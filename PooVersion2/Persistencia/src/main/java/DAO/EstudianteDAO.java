@@ -8,21 +8,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EstudianteDAO implements IEstudianteDAO {
-    private static final String INSERT_ESTUDIANTE_SQL = "INSERT INTO estudiante (codigo, programa_id, activo, promedio) VALUES (?, ?, ?, ?)";
-    private static final String SELECT_ESTUDIANTE_BY_ID = "SELECT * FROM estudiante WHERE idEstudiante = ?";
+    private static final String INSERT_ESTUDIANTE_SQL = "INSERT INTO estudiante (nombre, apellidos, email, codigo, programa_id, activo, promedio) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    private static final String SELECT_ESTUDIANTE_BY_ID = "SELECT * FROM estudiante WHERE id = ?";
     private static final String SELECT_ALL_ESTUDIANTES = "SELECT * FROM estudiante";
-    private static final String UPDATE_ESTUDIANTE_SQL = "UPDATE estudiante SET codigo = ?, programa_id = ?, activo = ?, promedio = ? WHERE idEstudiante = ?";
-    private static final String DELETE_ESTUDIANTE_SQL = "DELETE FROM estudiante WHERE idEstudiante = ?";
+    private static final String UPDATE_ESTUDIANTE_SQL = "UPDATE estudiante SET nombre = ?, apellidos = ?, email = ?, codigo = ?, programa_id = ?, activo = ?, promedio = ? WHERE id = ?";
+    private static final String DELETE_ESTUDIANTE_SQL = "DELETE FROM estudiante WHERE id = ?";
 
     @Override
     public void addEstudiante(Estudiante estudiante) throws ValidationException {
         validateEstudiante(estudiante);
         try (Connection connection = ConexionMySQL.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_ESTUDIANTE_SQL)) {
-            preparedStatement.setDouble(1, estudiante.getCodigo());
-            preparedStatement.setInt(2, estudiante.getPrograma().getId().intValue());
-            preparedStatement.setBoolean(3, estudiante.isActivo());
-            preparedStatement.setDouble(4, estudiante.getPromedio());
+            preparedStatement.setString(1, estudiante.getNombre());
+            preparedStatement.setString(2, estudiante.getApellidos());
+            preparedStatement.setString(3, estudiante.getEmail());
+            preparedStatement.setInt(4, estudiante.getCodigo());
+            preparedStatement.setInt(5, estudiante.getPrograma().getId());
+            preparedStatement.setBoolean(6, estudiante.isActivo());
+            preparedStatement.setDouble(7, estudiante.getPromedio());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             printSQLException(e);
@@ -37,12 +40,15 @@ public class EstudianteDAO implements IEstudianteDAO {
             preparedStatement.setInt(1, id);
             ResultSet rs = preparedStatement.executeQuery();
             if (rs.next()) {
-                double codigo = rs.getDouble("codigo");
+                String nombre = rs.getString("nombre");
+                String apellidos = rs.getString("apellidos");
+                String email = rs.getString("email");
+                int codigo = rs.getInt("codigo");
                 int programaId = rs.getInt("programa_id");
                 boolean activo = rs.getBoolean("activo");
                 double promedio = rs.getDouble("promedio");
                 Programa programa = new ProgramaDAO().getProgramaById(programaId);
-                estudiante = new Estudiante(codigo, programa, activo, promedio);
+                estudiante = new Estudiante(id, nombre, apellidos, email, codigo, programa, activo, promedio);
             }
         } catch (SQLException e) {
             printSQLException(e);
@@ -57,13 +63,16 @@ public class EstudianteDAO implements IEstudianteDAO {
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_ESTUDIANTES)) {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                int id = rs.getInt("idEstudiante");
-                double codigo = rs.getDouble("codigo");
+                int id = rs.getInt("id");
+                String nombre = rs.getString("nombre");
+                String apellidos = rs.getString("apellidos");
+                String email = rs.getString("email");
+                int codigo = rs.getInt("codigo");
                 int programaId = rs.getInt("programa_id");
                 boolean activo = rs.getBoolean("activo");
                 double promedio = rs.getDouble("promedio");
                 Programa programa = new ProgramaDAO().getProgramaById(programaId);
-                estudiantes.add(new Estudiante(codigo, programa, activo, promedio));
+                estudiantes.add(new Estudiante(id, nombre, apellidos, email, codigo, programa, activo, promedio));
             }
         } catch (SQLException e) {
             printSQLException(e);
@@ -76,11 +85,14 @@ public class EstudianteDAO implements IEstudianteDAO {
         validateEstudiante(estudiante);
         try (Connection connection = ConexionMySQL.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ESTUDIANTE_SQL)) {
-            preparedStatement.setDouble(1, estudiante.getCodigo());
-            preparedStatement.setInt(2, estudiante.getPrograma().getId().intValue());
-            preparedStatement.setBoolean(3, estudiante.isActivo());
-            preparedStatement.setDouble(4, estudiante.getPromedio());
-            preparedStatement.setInt(5, (int) estudiante.getCodigo());
+            preparedStatement.setString(1, estudiante.getNombre());
+            preparedStatement.setString(2, estudiante.getApellidos());
+            preparedStatement.setString(3, estudiante.getEmail());
+            preparedStatement.setInt(4, estudiante.getCodigo());
+            preparedStatement.setInt(5, estudiante.getPrograma().getId());
+            preparedStatement.setBoolean(6, estudiante.isActivo());
+            preparedStatement.setDouble(7, estudiante.getPromedio());
+            preparedStatement.setInt(8, estudiante.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             printSQLException(e);

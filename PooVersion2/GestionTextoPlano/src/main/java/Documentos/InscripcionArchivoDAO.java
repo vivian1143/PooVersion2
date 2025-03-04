@@ -1,10 +1,14 @@
 package Documentos;
 
 import Modelos.Inscripcion;
+import Modelos.Estudiante;
+import Modelos.Curso;
+import Modelos.Programa;
 import Interfaces.IInscripcionArchivoDAO;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class InscripcionArchivoDAO implements IInscripcionArchivoDAO {
@@ -18,9 +22,9 @@ public class InscripcionArchivoDAO implements IInscripcionArchivoDAO {
     }
 
     @Override
-    public Inscripcion getInscripcionById(double id) {
+    public Inscripcion getInscripcionById(Integer id) {
         for (Inscripcion i : getAllInscripciones()) {
-            if (i.getId() == id) {
+            if (i.getId() == (id)) {
                 return i;
             }
         }
@@ -34,10 +38,30 @@ public class InscripcionArchivoDAO implements IInscripcionArchivoDAO {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
-                Curso curso = new Curso(Double.parseDouble(data[1]), "NombreTemporal"); // Asigna un nombre temporal
-                Estudiante estudiante = new Estudiante(Double.parseDouble(data[2]), "NombreTemporal", "", "", 0, null, false, 0);
-                Inscripcion i = new Inscripcion(Double.parseDouble(data[0]), curso, estudiante, data[3]);
-                lista.add(i);
+                Integer cursoId = Integer.parseInt(data[1]);
+                String cursoNombre = data[2];
+                Integer programaId = Integer.parseInt(data[3]);
+                String programaNombre = data[4];
+                double programaDuracion = Double.parseDouble(data[5]);
+                Date programaRegistro = new Date(Long.parseLong(data[6]));
+                Programa programa = new Programa(programaId, programaNombre, programaDuracion, programaRegistro, null);
+                boolean cursoActivo = Boolean.parseBoolean(data[7]);
+                Curso curso = new Curso(cursoId, cursoNombre, programa, cursoActivo);
+
+                Integer estudianteId = Integer.parseInt(data[8]);
+                String estudianteNombre = data[9];
+                String estudianteApellidos = data[10];
+                String estudianteEmail = data[11];
+                int estudianteCodigo = Integer.parseInt(data[12]);
+                boolean estudianteActivo = Boolean.parseBoolean(data[13]);
+                double estudiantePromedio = Double.parseDouble(data[14]);
+                Estudiante estudiante = new Estudiante(estudianteId, estudianteNombre, estudianteApellidos, estudianteEmail, estudianteCodigo, programa, estudianteActivo, estudiantePromedio);
+
+                Integer inscripcionId = Integer.parseInt(data[0]);
+                int año = Integer.parseInt(data[15]);
+                int semestre = Integer.parseInt(data[16]);
+                Inscripcion inscripcion = new Inscripcion(inscripcionId, curso, año, semestre, estudiante);
+                lista.add(inscripcion);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -49,7 +73,7 @@ public class InscripcionArchivoDAO implements IInscripcionArchivoDAO {
     public void updateInscripcion(Inscripcion inscripcion) {
         List<Inscripcion> lista = getAllInscripciones();
         for (int i = 0; i < lista.size(); i++) {
-            if (lista.get(i).getId() == inscripcion.getId()) {
+            if (lista.get(i).getId() == (inscripcion.getId())) {
                 lista.set(i, inscripcion);
                 break;
             }
@@ -58,16 +82,21 @@ public class InscripcionArchivoDAO implements IInscripcionArchivoDAO {
     }
 
     @Override
-    public void deleteInscripcion(double id) {
+    public void deleteInscripcion(Integer id) {
         List<Inscripcion> lista = getAllInscripciones();
-        lista.removeIf(i -> i.getId() == id);
+        lista.removeIf(i -> i.getId() == (id));
         saveAllInscripciones(lista);
     }
 
     private void saveAllInscripciones(List<Inscripcion> lista) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, false))) {
             for (Inscripcion i : lista) {
-                writer.write(i.getId() + "," + i.getCurso() + "," + i.getEstudiante());
+                writer.write(i.getId() + "," + i.getCurso().getId() + "," + i.getCurso().getNombre() + "," +
+                        i.getCurso().getPrograma().getId() + "," + i.getCurso().getPrograma().getNombre() + "," +
+                        i.getCurso().getPrograma().getDuracion() + "," + i.getCurso().getPrograma().getRegistro().getTime() + "," +
+                        i.getCurso().isActivo() + "," + i.getEstudiante().getId() + "," + i.getEstudiante().getNombre() + "," +
+                        i.getEstudiante().getApellidos() + "," + i.getEstudiante().getEmail() + "," + i.getEstudiante().getCodigo() + "," +
+                        i.getEstudiante().isActivo() + "," + i.getEstudiante().getPromedio() + "," + i.getAño() + "," + i.getSemestre());
                 writer.newLine();
             }
         } catch (IOException e) {

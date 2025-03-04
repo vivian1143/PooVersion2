@@ -18,10 +18,10 @@ public class PersonaArchivoDAO implements IPersonaArchivoDAO {
     }
 
     @Override
-    public Persona getPersonaById(double id) {
+    public Persona getPersonaById(Integer id) {
         List<Persona> personas = getAllPersonas();
         for (Persona persona : personas) {
-            if (persona.getId() == id) {
+            if (persona.getId().equals(id)) {
                 return persona;
             }
         }
@@ -36,7 +36,7 @@ public class PersonaArchivoDAO implements IPersonaArchivoDAO {
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
                 Persona persona = new Persona(
-                        Double.parseDouble(data[0]),
+                        Integer.parseInt(data[0]),
                         data[1],
                         data[2],
                         data[3]
@@ -53,7 +53,7 @@ public class PersonaArchivoDAO implements IPersonaArchivoDAO {
     public void updatePersona(Persona persona) {
         List<Persona> personas = getAllPersonas();
         for (int i = 0; i < personas.size(); i++) {
-            if (personas.get(i).getId() == persona.getId()) {
+            if (personas.get(i).getId().equals(persona.getId())) {
                 personas.set(i, persona);
                 break;
             }
@@ -62,9 +62,9 @@ public class PersonaArchivoDAO implements IPersonaArchivoDAO {
     }
 
     @Override
-    public void deletePersona(double id) {
+    public void deletePersona(Integer id) {
         List<Persona> personas = getAllPersonas();
-        personas.removeIf(persona -> persona.getId() == id);
+        personas.removeIf(persona -> persona.getId().equals(id));
         saveAllPersonas(personas);
     }
 

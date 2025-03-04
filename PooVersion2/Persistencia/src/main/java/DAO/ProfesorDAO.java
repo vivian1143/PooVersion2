@@ -7,18 +7,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProfesorDAO implements IProfesorDAO {
-    private static final String INSERT_PROFESOR_SQL = "INSERT INTO profesor (tipoContrato) VALUES (?)";
-    private static final String SELECT_PROFESOR_BY_ID = "SELECT * FROM profesor WHERE idProfesor = ?";
-    private static final String SELECT_ALL_PROFESORES = "SELECT * FROM profesor";
-    private static final String UPDATE_PROFESOR_SQL = "UPDATE profesor SET tipoContrato = ? WHERE idProfesor = ?";
-    private static final String DELETE_PROFESOR_SQL = "DELETE FROM profesor WHERE idProfesor = ?";
+    private static final String INSERT_PROFESOR_SQL = "INSERT INTO persona (nombre, apellidos, email, tipoContrato) VALUES (?, ?, ?, ?)";
+    private static final String SELECT_PROFESOR_BY_ID = "SELECT * FROM persona WHERE id = ?";
+    private static final String SELECT_ALL_PROFESORES = "SELECT * FROM persona WHERE tipoContrato IS NOT NULL";
+    private static final String UPDATE_PROFESOR_SQL = "UPDATE persona SET nombre = ?, apellidos = ?, email = ?, tipoContrato = ? WHERE id = ?";
+    private static final String DELETE_PROFESOR_SQL = "DELETE FROM persona WHERE id = ?";
 
     @Override
     public void addProfesor(Profesor profesor) throws ValidationException {
         validateProfesor(profesor);
         try (Connection connection = ConexionMySQL.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_PROFESOR_SQL)) {
-            preparedStatement.setString(1, profesor.getTipoContrato());
+            preparedStatement.setString(1, profesor.getNombre());
+            preparedStatement.setString(2, profesor.getApellidos());
+            preparedStatement.setString(3, profesor.getEmail());
+            preparedStatement.setString(4, profesor.getTipoContrato());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             printSQLException(e);
@@ -33,8 +36,11 @@ public class ProfesorDAO implements IProfesorDAO {
             preparedStatement.setInt(1, id);
             ResultSet rs = preparedStatement.executeQuery();
             if (rs.next()) {
+                String nombre = rs.getString("nombre");
+                String apellidos = rs.getString("apellidos");
+                String email = rs.getString("email");
                 String tipoContrato = rs.getString("tipoContrato");
-                profesor = new Profesor(tipoContrato);
+                profesor = new Profesor(id, nombre, apellidos, email, tipoContrato);
             }
         } catch (SQLException e) {
             printSQLException(e);
@@ -49,8 +55,12 @@ public class ProfesorDAO implements IProfesorDAO {
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_PROFESORES)) {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
+                int id = rs.getInt("id");
+                String nombre = rs.getString("nombre");
+                String apellidos = rs.getString("apellidos");
+                String email = rs.getString("email");
                 String tipoContrato = rs.getString("tipoContrato");
-                profesores.add(new Profesor(tipoContrato));
+                profesores.add(new Profesor(id, nombre, apellidos, email, tipoContrato));
             }
         } catch (SQLException e) {
             printSQLException(e);
@@ -63,7 +73,11 @@ public class ProfesorDAO implements IProfesorDAO {
         validateProfesor(profesor);
         try (Connection connection = ConexionMySQL.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_PROFESOR_SQL)) {
-            preparedStatement.setString(1, profesor.getTipoContrato());
+            preparedStatement.setString(1, profesor.getNombre());
+            preparedStatement.setString(2, profesor.getApellidos());
+            preparedStatement.setString(3, profesor.getEmail());
+            preparedStatement.setString(4, profesor.getTipoContrato());
+            preparedStatement.setInt(5, profesor.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             printSQLException(e);
@@ -82,6 +96,15 @@ public class ProfesorDAO implements IProfesorDAO {
     }
 
     private void validateProfesor(Profesor profesor) throws ValidationException {
+        if (profesor.getNombre() == null || profesor.getNombre().isEmpty()) {
+            throw new ValidationException("El nombre no puede estar vacío");
+        }
+        if (profesor.getApellidos() == null || profesor.getApellidos().isEmpty()) {
+            throw new ValidationException("Los apellidos no pueden estar vacíos");
+        }
+        if (profesor.getEmail() == null || profesor.getEmail().isEmpty()) {
+            throw new ValidationException("El email no puede estar vacío");
+        }
         if (profesor.getTipoContrato() == null || profesor.getTipoContrato().isEmpty()) {
             throw new ValidationException("El tipo de contrato no puede estar vacío");
         }

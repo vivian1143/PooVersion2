@@ -5,8 +5,8 @@ import java.util.List;
 
 public interface IPersonaArchivoDAO {
     void addPersona(Persona persona);
-    Persona getPersonaById(double id);
+    Persona getPersonaById(Integer id);
     List<Persona> getAllPersonas();
     void updatePersona(Persona persona);
-    void deletePersona(double id);
+    void deletePersona(Integer id);
 }

@@ -3,10 +3,11 @@ package Modelos;
 public class Profesor extends Persona {
     private String tipoContrato;
 
-    public Profesor(double id, String nombre, String apellidos, String email, String tipoContrato) {
+    public Profesor(Integer id, String nombre, String apellidos, String email, String tipoContrato) {
         super(id, nombre, apellidos, email);
         this.tipoContrato = tipoContrato;
     }
+
     public String getTipoContrato() {
         return tipoContrato;
     }
@@ -18,7 +19,11 @@ public class Profesor extends Persona {
     @Override
     public String toString() {
         return "Profesor{" +
-                "tipoContrato='" + tipoContrato + '\'' +
+                "id=" + getId() +
+                ", nombre='" + getNombre() + '\'' +
+                ", apellidos='" + getApellidos() + '\'' +
+                ", email='" + getEmail() + '\'' +
+                ", tipoContrato='" + tipoContrato + '\'' +
                 '}';
     }
 }

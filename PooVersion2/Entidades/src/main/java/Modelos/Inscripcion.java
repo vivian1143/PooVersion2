@@ -1,16 +1,26 @@
 package Modelos;
 
 public class Inscripcion {
+    private int id;
     private Curso curso;
     private int año;
     private int semestre;
     private Estudiante estudiante;
 
-    public Inscripcion(Curso curso, int año, int semestre, Estudiante estudiante) {
+    public Inscripcion(int id, Curso curso, int año, int semestre, Estudiante estudiante) {
+        this.id = id;
         this.curso = curso;
         this.año = año;
         this.semestre = semestre;
         this.estudiante = estudiante;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Curso getCurso() {
@@ -48,7 +58,8 @@ public class Inscripcion {
     @Override
     public String toString() {
         return "Inscripcion{" +
-                "curso=" + curso +
+                "id=" + id +
+                ", curso=" + curso +
                 ", año=" + año +
                 ", semestre=" + semestre +
                 ", estudiante=" + estudiante +

@@ -1,12 +1,12 @@
 package Modelos;
 
-public class Estudiante extends Persona{
-    private double codigo;
+public class Estudiante extends Persona {
+    private int codigo;
     private Programa programa;
     private boolean activo;
     private double promedio;
 
-    public Estudiante(double id, String nombre, String apellidos, String email, double codigo, Programa programa, boolean activo, double promedio) {
+    public Estudiante(Integer id, String nombre, String apellidos, String email, int codigo, Programa programa, boolean activo, double promedio) {
         super(id, nombre, apellidos, email);
         this.codigo = codigo;
         this.programa = programa;
@@ -14,11 +14,11 @@ public class Estudiante extends Persona{
         this.promedio = promedio;
     }
 
-    public double getCodigo() {
+    public int getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(double codigo) {
+    public void setCodigo(int codigo) {
         this.codigo = codigo;
     }
 

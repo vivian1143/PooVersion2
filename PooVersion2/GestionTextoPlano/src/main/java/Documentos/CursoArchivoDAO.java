@@ -1,10 +1,13 @@
+// CursoArchivoDAO.java
 package Documentos;
 
 import Modelos.Curso;
+import Modelos.Programa;
 import Interfaces.ICursoArchivoDAO;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class CursoArchivoDAO implements ICursoArchivoDAO {
@@ -18,10 +21,10 @@ public class CursoArchivoDAO implements ICursoArchivoDAO {
     }
 
     @Override
-    public Curso getCursoById(double id) {
+    public Curso getCursoById(Integer id) {
         List<Curso> cursos = getAllCursos();
         for (Curso curso : cursos) {
-            if (curso.getId() == id) {
+            if (curso.getId().equals(id)) {
                 return curso;
             }
         }
@@ -38,8 +41,8 @@ public class CursoArchivoDAO implements ICursoArchivoDAO {
                 Integer id = Integer.parseInt(data[0]);
                 String nombre = data[1];
 
-                // Crear un objeto Programa (esto depende de cómo lo guardes en el archivo)
-                Programa programa = new Programa(0, data[2], 0, new Date(), null); // Ajustar según tu modelo
+                // Create a Programa object (adjust according to your model)
+                Programa programa = new Programa(0, data[2], 0, new Date(), null); // Adjust as needed
 
                 boolean activo = Boolean.parseBoolean(data[3]);
 
@@ -56,7 +59,7 @@ public class CursoArchivoDAO implements ICursoArchivoDAO {
     public void updateCurso(Curso curso) {
         List<Curso> cursos = getAllCursos();
         for (int i = 0; i < cursos.size(); i++) {
-            if (cursos.get(i).getId() == curso.getId()) {
+            if (cursos.get(i).getId().equals(curso.getId())) {
                 cursos.set(i, curso);
                 break;
             }
@@ -65,16 +68,16 @@ public class CursoArchivoDAO implements ICursoArchivoDAO {
     }
 
     @Override
-    public void deleteCurso(double id) {
+    public void deleteCurso(Integer id) {
         List<Curso> cursos = getAllCursos();
-        cursos.removeIf(curso -> curso.getId() == id);
+        cursos.removeIf(curso -> curso.getId().equals(id));
         saveAllCursos(cursos);
     }
 
     private void saveAllCursos(List<Curso> cursos) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, false))) {
             for (Curso curso : cursos) {
-                writer.write(curso.getId() + "," + curso.getNombre() + "," + curso.getDescripcion());
+                writer.write(curso.getId() + "," + curso.getNombre() + "," + curso.getPrograma().getNombre() + "," + curso.isActivo());
                 writer.newLine();
             }
         } catch (IOException e) {

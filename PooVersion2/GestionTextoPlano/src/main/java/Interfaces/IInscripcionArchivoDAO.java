@@ -5,8 +5,8 @@ import java.util.List;
 
 public interface IInscripcionArchivoDAO {
     void addInscripcion(Inscripcion inscripcion);
-    Inscripcion getInscripcionById(double id);
+    Inscripcion getInscripcionById(Integer id);
     List<Inscripcion> getAllInscripciones();
     void updateInscripcion(Inscripcion inscripcion);
-    void deleteInscripcion(double id);
+    void deleteInscripcion(Integer id);
 }

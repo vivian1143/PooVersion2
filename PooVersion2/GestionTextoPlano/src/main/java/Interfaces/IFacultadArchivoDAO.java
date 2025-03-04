@@ -5,8 +5,8 @@ import java.util.List;
 
 public interface IFacultadArchivoDAO {
     void addFacultad(Facultad facultad);
-    Facultad getFacultadById(double id);
+    Facultad getFacultadById(Integer id);
     List<Facultad> getAllFacultades();
     void updateFacultad(Facultad facultad);
-    void deleteFacultad(double id);
+    void deleteFacultad(Integer id);
 }

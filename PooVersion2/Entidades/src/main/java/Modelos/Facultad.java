@@ -1,21 +1,21 @@
 package Modelos;
 
 public class Facultad {
-    private double id;
+    private Integer id;
     private String nombre;
     private Persona decano;
 
-    public Facultad(double id, String nombre, Persona decano) {
+    public Facultad(Integer id, String nombre, Persona decano) {
         this.id = id;
         this.nombre = nombre;
         this.decano = decano;
     }
 
-    public double getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(double id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

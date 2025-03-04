@@ -5,8 +5,8 @@ import java.util.List;
 
 public interface ICursoProfesorArchivoDAO {
     void addCursoProfesor(CursoProfesor cursoProfesor);
-    CursoProfesor getCursoProfesorById(double id);
+    CursoProfesor getCursoProfesorById(Integer id);
     List<CursoProfesor> getAllCursoProfesores();
     void updateCursoProfesor(CursoProfesor cursoProfesor);
-    void deleteCursoProfesor(double id);
+    void deleteCursoProfesor(Integer id);
 }

@@ -19,9 +19,9 @@ public class FacultadArchivoDAO implements IFacultadArchivoDAO {
     }
 
     @Override
-    public Facultad getFacultadById(double id) {
+    public Facultad getFacultadById(Integer id) {
         for (Facultad f : getAllFacultades()) {
-            if (f.getId() == id) {
+            if (f.getId().equals(id)) {
                 return f;
             }
         }
@@ -36,7 +36,7 @@ public class FacultadArchivoDAO implements IFacultadArchivoDAO {
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
                 Persona decano = new Persona(0, data[2], "", ""); // Solo guarda el nombre del decano temporalmente
-                Facultad f = new Facultad(Double.parseDouble(data[0]), data[1], decano);
+                Facultad f = new Facultad(Integer.parseInt(data[0]), data[1], decano);
 
                 lista.add(f);
             }
@@ -50,7 +50,7 @@ public class FacultadArchivoDAO implements IFacultadArchivoDAO {
     public void updateFacultad(Facultad facultad) {
         List<Facultad> lista = getAllFacultades();
         for (int i = 0; i < lista.size(); i++) {
-            if (lista.get(i).getId() == facultad.getId()) {
+            if (lista.get(i).getId().equals(facultad.getId())) {
                 lista.set(i, facultad);
                 break;
             }
@@ -59,9 +59,9 @@ public class FacultadArchivoDAO implements IFacultadArchivoDAO {
     }
 
     @Override
-    public void deleteFacultad(double id) {
+    public void deleteFacultad(Integer id) {
         List<Facultad> lista = getAllFacultades();
-        lista.removeIf(f -> f.getId() == id);
+        lista.removeIf(f -> f.getId().equals(id));
         saveAllFacultades(lista);
     }
 

@@ -1,10 +1,12 @@
 package Documentos;
 
 import Modelos.Programa;
+import Modelos.Facultad;
 import Interfaces.IProgramaArchivoDAO;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ProgramaArchivoDAO implements IProgramaArchivoDAO {
@@ -18,9 +20,9 @@ public class ProgramaArchivoDAO implements IProgramaArchivoDAO {
     }
 
     @Override
-    public Programa getProgramaById(double id) {
+    public Programa getProgramaById(Integer id) {
         for (Programa p : getAllProgramas()) {
-            if (p.getId() == id) {
+            if (p.getId().equals(id)) {
                 return p;
             }
         }
@@ -35,14 +37,15 @@ public class ProgramaArchivoDAO implements IProgramaArchivoDAO {
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
                 if (data.length == 5) {
-                    Double id = Double.parseDouble(data[0]);
+                    Integer id = Integer.parseInt(data[0]);
                     String nombre = data[1];
                     double duracion = Double.parseDouble(data[2]);
-                    Date registro = new Date(data[3]);
-                    Facultad facultad = new Facultad(data[4]);
+                    Date registro = new Date(Long.parseLong(data[3]));
+                    Facultad facultad = new Facultad(Integer.parseInt(data[4]), "", null);
 
                     Programa p = new Programa(id, nombre, duracion, registro, facultad);
                     lista.add(p);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -54,7 +57,7 @@ public class ProgramaArchivoDAO implements IProgramaArchivoDAO {
     public void updatePrograma(Programa programa) {
         List<Programa> lista = getAllProgramas();
         for (int i = 0; i < lista.size(); i++) {
-            if (lista.get(i).getId() == programa.getId()) {
+            if (lista.get(i).getId().equals(programa.getId())) {
                 lista.set(i, programa);
                 break;
             }
@@ -63,16 +66,16 @@ public class ProgramaArchivoDAO implements IProgramaArchivoDAO {
     }
 
     @Override
-    public void deletePrograma(double id) {
+    public void deletePrograma(Integer id) {
         List<Programa> lista = getAllProgramas();
-        lista.removeIf(p -> p.getId() == id);
+        lista.removeIf(p -> p.getId().equals(id));
         saveAllProgramas(lista);
     }
 
     private void saveAllProgramas(List<Programa> lista) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, false))) {
             for (Programa p : lista) {
-                writer.write(p.getId() + "," + p.getNombre() + "," + p.getFacultad());
+                writer.write(p.getId() + "," + p.getNombre() + "," + p.getDuracion() + "," + p.getRegistro().getTime() + "," + p.getFacultad().getId());
                 writer.newLine();
             }
         } catch (IOException e) {

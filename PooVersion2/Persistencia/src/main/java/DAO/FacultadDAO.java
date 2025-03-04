@@ -9,10 +9,10 @@ import java.util.List;
 
 public class FacultadDAO implements IFacultadDAO {
     private static final String INSERT_FACULTAD_SQL = "INSERT INTO facultad (nombre, decano_id) VALUES (?, ?)";
-    private static final String SELECT_FACULTAD_BY_ID = "SELECT * FROM facultad WHERE idFacultad = ?";
+    private static final String SELECT_FACULTAD_BY_ID = "SELECT * FROM facultad WHERE id = ?";
     private static final String SELECT_ALL_FACULTADES = "SELECT * FROM facultad";
-    private static final String UPDATE_FACULTAD_SQL = "UPDATE facultad SET nombre = ?, decano_id = ? WHERE idFacultad = ?";
-    private static final String DELETE_FACULTAD_SQL = "DELETE FROM facultad WHERE idFacultad = ?";
+    private static final String UPDATE_FACULTAD_SQL = "UPDATE facultad SET nombre = ?, decano_id = ? WHERE id = ?";
+    private static final String DELETE_FACULTAD_SQL = "DELETE FROM facultad WHERE id = ?";
 
     @Override
     public void addFacultad(Facultad facultad) throws ValidationException {
@@ -20,7 +20,7 @@ public class FacultadDAO implements IFacultadDAO {
         try (Connection connection = ConexionMySQL.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_FACULTAD_SQL)) {
             preparedStatement.setString(1, facultad.getNombre());
-            preparedStatement.setInt(2, (int) facultad.getDecano().getId());
+            preparedStatement.setInt(2, facultad.getDecano().getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             printSQLException(e);
@@ -53,7 +53,7 @@ public class FacultadDAO implements IFacultadDAO {
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_FACULTADES)) {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                int id = rs.getInt("idFacultad");
+                int id = rs.getInt("id");
                 String nombre = rs.getString("nombre");
                 int decanoId = rs.getInt("decano_id");
                 Persona decano = new PersonaDAO().getPersonaById(decanoId);
@@ -71,8 +71,8 @@ public class FacultadDAO implements IFacultadDAO {
         try (Connection connection = ConexionMySQL.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_FACULTAD_SQL)) {
             preparedStatement.setString(1, facultad.getNombre());
-            preparedStatement.setInt(2, (int) facultad.getDecano().getId());
-            preparedStatement.setInt(3, (int) facultad.getId());
+            preparedStatement.setInt(2, facultad.getDecano().getId());
+            preparedStatement.setInt(3, facultad.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             printSQLException(e);
@@ -94,7 +94,7 @@ public class FacultadDAO implements IFacultadDAO {
         if (facultad.getNombre() == null || facultad.getNombre().isEmpty()) {
             throw new ValidationException("El nombre no puede estar vacío");
         }
-        if (facultad.getDecano() == null || facultad.getDecano().getId() == 0.0) {
+        if (facultad.getDecano() == null || facultad.getDecano().getId() == null) {
             throw new ValidationException("El decano no puede estar vacío");
         }
     }

@@ -1,10 +1,12 @@
 package Documentos;
 
 import Modelos.Estudiante;
+import Modelos.Programa;
 import Interfaces.IEstudianteArchivoDAO;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class EstudianteArchivoDAO implements IEstudianteArchivoDAO {
@@ -18,10 +20,10 @@ public class EstudianteArchivoDAO implements IEstudianteArchivoDAO {
     }
 
     @Override
-    public Estudiante getEstudianteById(double id) {
+    public Estudiante getEstudianteById(Integer id) {
         List<Estudiante> lista = getAllEstudiantes();
         for (Estudiante e : lista) {
-            if (e.getId() == id) {
+            if (e.getId().equals(id)) {
                 return e;
             }
         }
@@ -36,23 +38,23 @@ public class EstudianteArchivoDAO implements IEstudianteArchivoDAO {
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
                 Programa programa = new Programa(
-                        Double.parseDouble(data[5]), // ID del programa
+                        Integer.parseInt(data[5]), // ID del programa
                         data[6], // Nombre del programa
                         Double.parseDouble(data[7]), // Duración
-                        new Date(), // Fecha de registro (aquí puedes leerla si está en el archivo)
+                        new Date(Long.parseLong(data[8])), // Fecha de registro
                         null // Puedes agregar aquí la Facultad si la tienes en el archivo
                 );
 
                 // Crear el estudiante con todos los datos correctos
                 Estudiante e = new Estudiante(
-                        Double.parseDouble(data[0]), // ID
+                        Integer.parseInt(data[0]), // ID
                         data[1], // Nombre
                         data[2], // Apellidos
                         data[3], // Email
-                        Double.parseDouble(data[4]), // Código
+                        Integer.parseInt(data[4]), // Código
                         programa, // Programa como objeto, no String
-                        Boolean.parseBoolean(data[8]), // Activo
-                        Double.parseDouble(data[9]) // Promedio
+                        Boolean.parseBoolean(data[9]), // Activo
+                        Double.parseDouble(data[10]) // Promedio
                 );
 
                 lista.add(e);
@@ -67,7 +69,7 @@ public class EstudianteArchivoDAO implements IEstudianteArchivoDAO {
     public void updateEstudiante(Estudiante estudiante) {
         List<Estudiante> lista = getAllEstudiantes();
         for (int i = 0; i < lista.size(); i++) {
-            if (lista.get(i).getId() == estudiante.getId()) {
+            if (lista.get(i).getId().equals(estudiante.getId())) {
                 lista.set(i, estudiante);
                 break;
             }
@@ -76,16 +78,16 @@ public class EstudianteArchivoDAO implements IEstudianteArchivoDAO {
     }
 
     @Override
-    public void deleteEstudiante(double id) {
+    public void deleteEstudiante(Integer id) {
         List<Estudiante> lista = getAllEstudiantes();
-        lista.removeIf(e -> e.getId() == id);
+        lista.removeIf(e -> e.getId().equals(id));
         saveAllEstudiantes(lista);
     }
 
     private void saveAllEstudiantes(List<Estudiante> lista) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, false))) {
             for (Estudiante e : lista) {
-                writer.write(e.getId() + "," + e.getNombre() + "," + e.getApellidos() + "," + e.getEmail());
+                writer.write(e.getId() + "," + e.getNombre() + "," + e.getApellidos() + "," + e.getEmail() + "," + e.getCodigo() + "," + e.getPrograma().getId() + "," + e.getPrograma().getNombre() + "," + e.getPrograma().getDuracion() + "," + e.getPrograma().getRegistro().getTime() + "," + e.isActivo() + "," + e.getPromedio());
                 writer.newLine();
             }
         } catch (IOException e) {

@@ -1,16 +1,26 @@
 package Modelos;
 
 public class CursoProfesor {
+    private int id;
     private Profesor profesor;
     private int año;
     private int semestre;
     private Curso curso;
 
-    public CursoProfesor(Profesor profesor, int año, int semestre, Curso curso) {
+    public CursoProfesor(int id, Profesor profesor, int año, int semestre, Curso curso) {
+        this.id = id;
         this.profesor = profesor;
         this.año = año;
         this.semestre = semestre;
         this.curso = curso;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Profesor getProfesor() {
@@ -48,7 +58,8 @@ public class CursoProfesor {
     @Override
     public String toString() {
         return "CursoProfesor{" +
-                "profesor=" + profesor +
+                "id=" + id +
+                ", profesor=" + profesor +
                 ", año=" + año +
                 ", semestre=" + semestre +
                 ", curso=" + curso +

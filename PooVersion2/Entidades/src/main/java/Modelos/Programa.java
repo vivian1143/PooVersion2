@@ -3,13 +3,13 @@ package Modelos;
 import java.util.Date;
 
 public class Programa {
-    private Double id;
+    private Integer id;
     private String nombre;
     private double duracion;
     private Date registro;
     private Facultad facultad;
 
-    public Programa(Double id, String nombre, double duracion, Date registro, Facultad facultad) {
+    public Programa(Integer id, String nombre, double duracion, Date registro, Facultad facultad) {
         this.id = id;
         this.nombre = nombre;
         this.duracion = duracion;
@@ -17,11 +17,11 @@ public class Programa {
         this.facultad = facultad;
     }
 
-    public Double getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Double id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

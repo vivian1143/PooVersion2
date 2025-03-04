@@ -3,17 +3,16 @@ package DAO;
 import Interfaces.IProgramaDAO;
 import Modelos.Programa;
 import Modelos.Facultad;
-import DAO.ValidationException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProgramaDAO implements IProgramaDAO {
     private static final String INSERT_PROGRAMA_SQL = "INSERT INTO programa (nombre, duracion, registro, facultad_id) VALUES (?, ?, ?, ?)";
-    private static final String SELECT_PROGRAMA_BY_ID = "SELECT * FROM programa WHERE idPrograma = ?";
+    private static final String SELECT_PROGRAMA_BY_ID = "SELECT * FROM programa WHERE id = ?";
     private static final String SELECT_ALL_PROGRAMAS = "SELECT * FROM programa";
-    private static final String UPDATE_PROGRAMA_SQL = "UPDATE programa SET nombre = ?, duracion = ?, registro = ?, facultad_id = ? WHERE idPrograma = ?";
-    private static final String DELETE_PROGRAMA_SQL = "DELETE FROM programa WHERE idPrograma = ?";
+    private static final String UPDATE_PROGRAMA_SQL = "UPDATE programa SET nombre = ?, duracion = ?, registro = ?, facultad_id = ? WHERE id = ?";
+    private static final String DELETE_PROGRAMA_SQL = "DELETE FROM programa WHERE id = ?";
 
     @Override
     public void addPrograma(Programa programa) throws ValidationException {
@@ -23,7 +22,7 @@ public class ProgramaDAO implements IProgramaDAO {
             preparedStatement.setString(1, programa.getNombre());
             preparedStatement.setDouble(2, programa.getDuracion());
             preparedStatement.setDate(3, new java.sql.Date(programa.getRegistro().getTime()));
-            preparedStatement.setInt(4, (int) programa.getFacultad().getId());
+            preparedStatement.setInt(4, programa.getFacultad().getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             printSQLException(e);
@@ -43,7 +42,7 @@ public class ProgramaDAO implements IProgramaDAO {
                 Date registro = rs.getDate("registro");
                 int facultadId = rs.getInt("facultad_id");
                 Facultad facultad = new FacultadDAO().getFacultadById(facultadId);
-                programa = new Programa((double) id, nombre, duracion, registro, facultad);
+                programa = new Programa(id, nombre, duracion, registro, facultad);
             }
         } catch (SQLException e) {
             printSQLException(e);
@@ -58,13 +57,13 @@ public class ProgramaDAO implements IProgramaDAO {
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_PROGRAMAS)) {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                int id = rs.getInt("idPrograma");
+                int id = rs.getInt("id");
                 String nombre = rs.getString("nombre");
                 double duracion = rs.getDouble("duracion");
                 Date registro = rs.getDate("registro");
                 int facultadId = rs.getInt("facultad_id");
                 Facultad facultad = new FacultadDAO().getFacultadById(facultadId);
-                programas.add(new Programa((double) id, nombre, duracion, registro, facultad));
+                programas.add(new Programa(id, nombre, duracion, registro, facultad));
             }
         } catch (SQLException e) {
             printSQLException(e);
@@ -80,8 +79,8 @@ public class ProgramaDAO implements IProgramaDAO {
             preparedStatement.setString(1, programa.getNombre());
             preparedStatement.setDouble(2, programa.getDuracion());
             preparedStatement.setDate(3, new java.sql.Date(programa.getRegistro().getTime()));
-            preparedStatement.setInt(4, (int) programa.getFacultad().getId());
-            preparedStatement.setInt(5, programa.getId().intValue());
+            preparedStatement.setInt(4, programa.getFacultad().getId());
+            preparedStatement.setInt(5, programa.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             printSQLException(e);
@@ -106,7 +105,7 @@ public class ProgramaDAO implements IProgramaDAO {
         if (programa.getDuracion() <= 0) {
             throw new ValidationException("La duración debe ser un número positivo");
         }
-        if (programa.getFacultad() == null || programa.getFacultad().getId() == 0.0) {
+        if (programa.getFacultad() == null || programa.getFacultad().getId() == null) {
             throw new ValidationException("La facultad no puede estar vacía");
         }
     }
