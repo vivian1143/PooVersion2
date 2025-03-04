@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 public class CursoProfesorArchivoDAO implements ICursoProfesorArchivoDAO {
-    private static final String FILE_PATH = "curso_profesor.txt";
+    private static final String FILE_PATH = "../curso_profesor.txt";
 
     @Override
     public void addCursoProfesor(CursoProfesor cursoProfesor) {
@@ -25,7 +25,7 @@ public class CursoProfesorArchivoDAO implements ICursoProfesorArchivoDAO {
     public CursoProfesor getCursoProfesorById(Integer id) {
         List<CursoProfesor> lista = getAllCursoProfesores();
         for (CursoProfesor cp : lista) {
-            if (cp.getId() == id) {
+            if (cp.getId()==(id)) {
                 return cp;
             }
         }
@@ -35,7 +35,15 @@ public class CursoProfesorArchivoDAO implements ICursoProfesorArchivoDAO {
     @Override
     public List<CursoProfesor> getAllCursoProfesores() {
         List<CursoProfesor> lista = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+        File file = new File(FILE_PATH);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");

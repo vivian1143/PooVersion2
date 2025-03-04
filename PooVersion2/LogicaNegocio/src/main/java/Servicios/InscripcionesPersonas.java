@@ -6,17 +6,17 @@ import Modelos.Profesor;
 import DAO.ValidationException;
 
 public class InscripcionesPersonas {
-    private ProfesorDAO profesorDAO;
+    //private ProfesorDAO profesorDAO;
     private ProfesorArchivoDAO profesorArchivoDAO;
 
     public InscripcionesPersonas() {
-        this.profesorDAO = new ProfesorDAO();
+        //this.profesorDAO = new ProfesorDAO();
         this.profesorArchivoDAO = new ProfesorArchivoDAO();
     }
 
     public void addProfesor(String nombre, String apellidos, String email, String tipoContrato) throws ValidationException {
         Profesor profesor = new Profesor(null, nombre, apellidos, email, tipoContrato);
-        profesorDAO.addProfesor(profesor);
+        //profesorDAO.addProfesor(profesor);
         profesorArchivoDAO.addProfesor(profesor);
     }
 }

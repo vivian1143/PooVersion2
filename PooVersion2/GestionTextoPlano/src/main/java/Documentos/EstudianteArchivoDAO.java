@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 public class EstudianteArchivoDAO implements IEstudianteArchivoDAO {
-    private static final String FILE_PATH = "estudiantes.txt";
+    private static final String FILE_PATH = "../estudiantes.txt";
 
     @Override
     public void addEstudiante(Estudiante estudiante) {
@@ -33,7 +33,15 @@ public class EstudianteArchivoDAO implements IEstudianteArchivoDAO {
     @Override
     public List<Estudiante> getAllEstudiantes() {
         List<Estudiante> lista = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+        File file = new File(FILE_PATH);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");

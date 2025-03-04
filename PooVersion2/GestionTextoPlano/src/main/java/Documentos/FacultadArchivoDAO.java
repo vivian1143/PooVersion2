@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FacultadArchivoDAO implements IFacultadArchivoDAO {
-    private static final String FILE_PATH = "facultades.txt";
+    private static final String FILE_PATH = "../facultades.txt";
 
     @Override
     public void addFacultad(Facultad facultad) {
@@ -31,7 +31,15 @@ public class FacultadArchivoDAO implements IFacultadArchivoDAO {
     @Override
     public List<Facultad> getAllFacultades() {
         List<Facultad> lista = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+        File file = new File(FILE_PATH);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");

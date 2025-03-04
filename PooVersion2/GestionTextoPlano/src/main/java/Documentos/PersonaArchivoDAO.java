@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PersonaArchivoDAO implements IPersonaArchivoDAO {
-    private static final String FILE_PATH = "personas.txt";
+    private static final String FILE_PATH = "../personas.txt";
 
     @Override
     public void addPersona(Persona persona) {
@@ -31,7 +31,15 @@ public class PersonaArchivoDAO implements IPersonaArchivoDAO {
     @Override
     public List<Persona> getAllPersonas() {
         List<Persona> personas = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+        File file = new File(FILE_PATH);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");

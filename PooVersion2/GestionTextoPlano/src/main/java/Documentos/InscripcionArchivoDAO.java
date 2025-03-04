@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 public class InscripcionArchivoDAO implements IInscripcionArchivoDAO {
-    private static final String FILE_PATH = "inscripciones.txt";
+    private static final String FILE_PATH = "../inscripciones.txt";
 
     @Override
     public void addInscripcion(Inscripcion inscripcion) {
@@ -24,7 +24,7 @@ public class InscripcionArchivoDAO implements IInscripcionArchivoDAO {
     @Override
     public Inscripcion getInscripcionById(Integer id) {
         for (Inscripcion i : getAllInscripciones()) {
-            if (i.getId() == (id)) {
+            if (i.getId()==(id)) {
                 return i;
             }
         }
@@ -34,7 +34,15 @@ public class InscripcionArchivoDAO implements IInscripcionArchivoDAO {
     @Override
     public List<Inscripcion> getAllInscripciones() {
         List<Inscripcion> lista = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+        File file = new File(FILE_PATH);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
@@ -73,7 +81,7 @@ public class InscripcionArchivoDAO implements IInscripcionArchivoDAO {
     public void updateInscripcion(Inscripcion inscripcion) {
         List<Inscripcion> lista = getAllInscripciones();
         for (int i = 0; i < lista.size(); i++) {
-            if (lista.get(i).getId() == (inscripcion.getId())) {
+            if (lista.get(i).getId()==(inscripcion.getId())) {
                 lista.set(i, inscripcion);
                 break;
             }
@@ -84,7 +92,7 @@ public class InscripcionArchivoDAO implements IInscripcionArchivoDAO {
     @Override
     public void deleteInscripcion(Integer id) {
         List<Inscripcion> lista = getAllInscripciones();
-        lista.removeIf(i -> i.getId() == (id));
+        lista.removeIf(i -> i.getId()==(id));
         saveAllInscripciones(lista);
     }
 

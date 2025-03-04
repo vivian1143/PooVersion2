@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 public class ProgramaArchivoDAO implements IProgramaArchivoDAO {
-    private static final String FILE_PATH = "programas.txt";
+    private static final String FILE_PATH = "../programas.txt";
 
     @Override
     public void addPrograma(Programa programa) {
@@ -32,7 +32,15 @@ public class ProgramaArchivoDAO implements IProgramaArchivoDAO {
     @Override
     public List<Programa> getAllProgramas() {
         List<Programa> lista = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+        File file = new File(FILE_PATH);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");

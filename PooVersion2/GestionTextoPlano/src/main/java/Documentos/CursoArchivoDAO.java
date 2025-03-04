@@ -1,4 +1,3 @@
-// CursoArchivoDAO.java
 package Documentos;
 
 import Modelos.Curso;
@@ -11,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 public class CursoArchivoDAO implements ICursoArchivoDAO {
-    private static final String FILE_PATH = "cursos.txt";
+    private static final String FILE_PATH = "/PooVersion2/GestionTextoPlano/src/main/resources/cursos.txt";
 
     @Override
     public void addCurso(Curso curso) {
@@ -34,7 +33,15 @@ public class CursoArchivoDAO implements ICursoArchivoDAO {
     @Override
     public List<Curso> getAllCursos() {
         List<Curso> cursos = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
+        File file = new File(FILE_PATH);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
