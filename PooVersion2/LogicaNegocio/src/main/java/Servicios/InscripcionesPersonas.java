@@ -1,34 +1,22 @@
 package Servicios;
 
-import DAO.InscripcionDAO;
-import Modelos.Inscripcion;
+import DAO.ProfesorDAO;
+import Documentos.ProfesorArchivoDAO;
+import Modelos.Profesor;
 import DAO.ValidationException;
-import java.util.List;
 
 public class InscripcionesPersonas {
-    private InscripcionDAO inscripcionDAO;
+    private ProfesorDAO profesorDAO;
+    private ProfesorArchivoDAO profesorArchivoDAO;
 
     public InscripcionesPersonas() {
-        this.inscripcionDAO = new InscripcionDAO();
+        this.profesorDAO = new ProfesorDAO();
+        this.profesorArchivoDAO = new ProfesorArchivoDAO();
     }
 
-    public void addInscripcion(Inscripcion inscripcion) throws ValidationException {
-        inscripcionDAO.addInscripcion(inscripcion);
-    }
-
-    public Inscripcion getInscripcionById(int id) {
-        return inscripcionDAO.getInscripcionById(id);
-    }
-
-    public List<Inscripcion> getAllInscripciones() {
-        return inscripcionDAO.getAllInscripciones();
-    }
-
-    public void updateInscripcion(Inscripcion inscripcion) throws ValidationException {
-        inscripcionDAO.updateInscripcion(inscripcion);
-    }
-
-    public void deleteInscripcion(int id) {
-        inscripcionDAO.deleteInscripcion(id);
+    public void addProfesor(String nombre, String apellidos, String email, String tipoContrato) throws ValidationException {
+        Profesor profesor = new Profesor(null, nombre, apellidos, email, tipoContrato);
+        profesorDAO.addProfesor(profesor);
+        profesorArchivoDAO.addProfesor(profesor);
     }
 }
