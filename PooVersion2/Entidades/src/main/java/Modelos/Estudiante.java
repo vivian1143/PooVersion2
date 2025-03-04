@@ -1,12 +1,13 @@
 package Modelos;
 
-public class Estudiante {
+public class Estudiante extends Persona{
     private double codigo;
     private Programa programa;
     private boolean activo;
     private double promedio;
 
-    public Estudiante(double codigo, Programa programa, boolean activo, double promedio) {
+    public Estudiante(double id, String nombre, String apellidos, String email, double codigo, Programa programa, boolean activo, double promedio) {
+        super(id, nombre, apellidos, email);
         this.codigo = codigo;
         this.programa = programa;
         this.activo = activo;

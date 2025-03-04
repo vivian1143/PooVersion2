@@ -1,6 +1,6 @@
 package Interfaces;
 
-import Modelos.Programa;
+import Modelos.CursoProfesor;
 import java.util.List;
 
 public interface ICursoProfesorArchivoDAO {

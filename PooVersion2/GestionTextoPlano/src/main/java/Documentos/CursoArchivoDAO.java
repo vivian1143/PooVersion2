@@ -35,11 +35,15 @@ public class CursoArchivoDAO implements ICursoArchivoDAO {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
-                Curso curso = new Curso(
-                        Double.parseDouble(data[0]),
-                        data[1],
-                        data[2]
-                );
+                Integer id = Integer.parseInt(data[0]);
+                String nombre = data[1];
+
+                // Crear un objeto Programa (esto depende de cómo lo guardes en el archivo)
+                Programa programa = new Programa(0, data[2], 0, new Date(), null); // Ajustar según tu modelo
+
+                boolean activo = Boolean.parseBoolean(data[3]);
+
+                Curso curso = new Curso(id, nombre, programa, activo);
                 cursos.add(curso);
             }
         } catch (IOException e) {
