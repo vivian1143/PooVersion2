@@ -1,11 +1,18 @@
 package IGU;
 
+import Servicios.InscripcionEstudiantes;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class InscripcionEstudianteIGU extends JPanel {
+    private InscripcionEstudiantes inscripcionEstudiantes;
+
     public InscripcionEstudianteIGU() {
-        setLayout(new GridLayout(8, 2, 10, 10));
+        inscripcionEstudiantes = new InscripcionEstudiantes();
+        setLayout(new GridLayout(7, 2, 10, 10));
 
         add(new JLabel("Nombre:"));
         JTextField nombreField = new JTextField();
@@ -23,10 +30,6 @@ public class InscripcionEstudianteIGU extends JPanel {
         JTextField codigoField = new JTextField();
         add(codigoField);
 
-        add(new JLabel("Programa académico:"));
-        JComboBox<String> programaBox = new JComboBox<>(new String[]{"Ingeniería", "Medicina", "Derecho"});
-        add(programaBox);
-
         add(new JLabel("Estado activo:"));
         JCheckBox activoCheck = new JCheckBox();
         add(activoCheck);
@@ -37,5 +40,24 @@ public class InscripcionEstudianteIGU extends JPanel {
 
         JButton inscribirBtn = new JButton("Inscribir");
         add(inscribirBtn);
+
+        inscribirBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String nombre = nombreField.getText();
+                String apellidos = apellidosField.getText();
+                String email = emailField.getText();
+                int codigo = Integer.parseInt(codigoField.getText());
+                boolean activo = activoCheck.isSelected();
+                double promedio = Double.parseDouble(promedioField.getText());
+
+                try {
+                    inscripcionEstudiantes.addEstudiante(nombre, apellidos, email, codigo, activo, promedio);
+                    JOptionPane.showMessageDialog(null, "Estudiante inscrito exitosamente");
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Error al inscribir estudiante: " + ex.getMessage());
+                }
+            }
+        });
     }
 }

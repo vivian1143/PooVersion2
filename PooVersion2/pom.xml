@@ -8,6 +8,7 @@
     <artifactId>PooVersion2</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
+
     <modules>
         <module>Entidades</module>
         <module>Persistencia</module>
