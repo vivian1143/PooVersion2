@@ -7,7 +7,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InscripcionArchivoDAO implements IIncripcionArchivoDAO {
+public class InscripcionArchivoDAO implements IInscripcionArchivoDAO {
     private static final String FILE_PATH = "inscripciones.txt";
 
     @Override
@@ -34,7 +34,9 @@ public class InscripcionArchivoDAO implements IIncripcionArchivoDAO {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
-                Inscripcion i = new Inscripcion(Double.parseDouble(data[0]), data[1], data[2], data[3]);
+                Curso curso = new Curso(Double.parseDouble(data[1]), "NombreTemporal"); // Asigna un nombre temporal
+                Estudiante estudiante = new Estudiante(Double.parseDouble(data[2]), "NombreTemporal", "", "", 0, null, false, 0);
+                Inscripcion i = new Inscripcion(Double.parseDouble(data[0]), curso, estudiante, data[3]);
                 lista.add(i);
             }
         } catch (IOException e) {
@@ -65,7 +67,7 @@ public class InscripcionArchivoDAO implements IIncripcionArchivoDAO {
     private void saveAllInscripciones(List<Inscripcion> lista) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, false))) {
             for (Inscripcion i : lista) {
-                writer.write(i.getId() + "," + i.getCurso() + "," + i.getEstudiante() + "," + i.getFecha());
+                writer.write(i.getId() + "," + i.getCurso() + "," + i.getEstudiante());
                 writer.newLine();
             }
         } catch (IOException e) {

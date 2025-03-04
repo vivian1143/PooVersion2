@@ -34,8 +34,15 @@ public class ProfesorArchivoDAO implements IProfesorArchivoDAO{
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
-                Profesor p = new Profesor(Double.parseDouble(data[0]), data[1], data[2]);
-                lista.add(p);
+                if (data.length == 5) {
+                    double id = Double.parseDouble(data[0]);
+                    String nombre = data[1];
+                    String apellidos = data[2];
+                    String email = data[3];
+                    String tipoContrato = data[4];
+
+                    Profesor p = new Profesor(id, nombre, apellidos, email, tipoContrato);
+                    lista.add(p);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -65,7 +72,7 @@ public class ProfesorArchivoDAO implements IProfesorArchivoDAO{
     private void saveAllProfesores(List<Profesor> lista) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, false))) {
             for (Profesor p : lista) {
-                writer.write(p.getId() + "," + p.getNombre() + "," + p.getEspecialidad());
+                writer.write(p.getId() + "," + p.getNombre() + "," + p.getTipoContrato());
                 writer.newLine();
             }
         } catch (IOException e) {

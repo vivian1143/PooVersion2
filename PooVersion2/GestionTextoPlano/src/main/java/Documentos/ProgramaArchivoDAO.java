@@ -34,8 +34,15 @@ public class ProgramaArchivoDAO implements IProgramaArchivoDAO {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
-                Programa p = new Programa(Double.parseDouble(data[0]), data[1], data[2]);
-                lista.add(p);
+                if (data.length == 5) {
+                    Double id = Double.parseDouble(data[0]);
+                    String nombre = data[1];
+                    double duracion = Double.parseDouble(data[2]);
+                    Date registro = new Date(data[3]);
+                    Facultad facultad = new Facultad(data[4]);
+
+                    Programa p = new Programa(id, nombre, duracion, registro, facultad);
+                    lista.add(p);
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -35,7 +35,26 @@ public class EstudianteArchivoDAO implements IEstudianteArchivoDAO {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
-                Estudiante e = new Estudiante(Double.parseDouble(data[0]), data[1], data[2], data[3]);
+                Programa programa = new Programa(
+                        Double.parseDouble(data[5]), // ID del programa
+                        data[6], // Nombre del programa
+                        Double.parseDouble(data[7]), // Duración
+                        new Date(), // Fecha de registro (aquí puedes leerla si está en el archivo)
+                        null // Puedes agregar aquí la Facultad si la tienes en el archivo
+                );
+
+                // Crear el estudiante con todos los datos correctos
+                Estudiante e = new Estudiante(
+                        Double.parseDouble(data[0]), // ID
+                        data[1], // Nombre
+                        data[2], // Apellidos
+                        data[3], // Email
+                        Double.parseDouble(data[4]), // Código
+                        programa, // Programa como objeto, no String
+                        Boolean.parseBoolean(data[8]), // Activo
+                        Double.parseDouble(data[9]) // Promedio
+                );
+
                 lista.add(e);
             }
         } catch (IOException e) {

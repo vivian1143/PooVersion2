@@ -35,7 +35,13 @@ public class CursoProfesorArchivoDAO implements ICursoProfesorArchivoDAO {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
-                CursoProfesor cp = new CursoProfesor(Double.parseDouble(data[0]), data[1], data[2]);
+                // Asegúrate de convertir los valores correctamente
+                Profesor profesor = new Profesor(data[0]); // Debes asegurarte de que Profesor tenga un constructor adecuado
+                int horas = Integer.parseInt(data[1]);
+                int salario = Integer.parseInt(data[2]);
+                Curso curso = new Curso(data[3]); // Debes asegurarte de que Curso tenga un constructor adecuado
+
+                CursoProfesor cp = new CursoProfesor(profesor, horas, salario, curso);
                 lista.add(cp);
             }
         } catch (IOException e) {

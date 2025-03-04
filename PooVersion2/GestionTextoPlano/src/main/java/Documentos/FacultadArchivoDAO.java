@@ -35,7 +35,9 @@ public class FacultadArchivoDAO implements IFacultadArchivoDAO {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
-                Facultad f = new Facultad(Double.parseDouble(data[0]), data[1], data[2]);
+                Persona decano = new Persona(0, data[2], "", ""); // Solo guarda el nombre del decano temporalmente
+                Facultad f = new Facultad(Double.parseDouble(data[0]), data[1], decano);
+
                 lista.add(f);
             }
         } catch (IOException e) {
@@ -66,7 +68,7 @@ public class FacultadArchivoDAO implements IFacultadArchivoDAO {
     private void saveAllFacultades(List<Facultad> lista) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, false))) {
             for (Facultad f : lista) {
-                writer.write(f.getId() + "," + f.getNombre() + "," + f.getUbicacion());
+                writer.write(f.getId() + "," + f.getNombre() + "," + f.getDecano().getNombre());
                 writer.newLine();
             }
         } catch (IOException e) {
