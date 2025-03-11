@@ -2,12 +2,15 @@ package InicioMain;
 
 import IGU.InscripcionProfesorIGU;
 import IGU.InscripcionEstudianteIGU;
+import Factory.ConexionFactory;
 
 import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
-        // Crear el frame
+
+        ConexionFactory.ejecutarScriptBD();
+
         JFrame frame = new JFrame("Inscripción");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(400, 300);
