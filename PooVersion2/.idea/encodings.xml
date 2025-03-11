@@ -3,6 +3,10 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/Entidades/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Entidades/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Factory/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Factory/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/GestionTextoPlano/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/GestionTextoPlano/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/LogicaNegocio/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/LogicaNegocio/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Main/src/main/java" charset="UTF-8" />
@@ -13,6 +17,8 @@
     <file url="file://$PROJECT_DIR$/Persistencia/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Presentacion/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Presentacion/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Utilidades/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Utilidades/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
   </component>
