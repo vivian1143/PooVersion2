@@ -1,9 +1,12 @@
 package DAO;
 
+import Validaciones.Validaciones;
 import Factory.CursoFactory;
 import Interfaces.ICursoDAO;
 import Modelos.Curso;
 import Modelos.Programa;
+
+import javax.management.InvalidAttributeValueException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +19,9 @@ public class CursoDAO implements ICursoDAO {
     private static final String DELETE_CURSO_SQL = "DELETE FROM curso WHERE id = ?";
 
     @Override
-    public void addCurso(Curso curso) throws ValidationException {
-        validateCurso(curso);
-        try (Connection connection = ConexionMySQL.getConnection();
+    public void addCurso(Curso curso) throws ValidationException, InvalidAttributeValueException {
+        Validaciones.validarCurso(curso);
+        try (Connection connection = Factory.ConexionFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_CURSO_SQL)) {
             preparedStatement.setString(1, curso.getNombre());
             preparedStatement.setInt(2, curso.getPrograma().getId().intValue());
@@ -32,7 +35,7 @@ public class CursoDAO implements ICursoDAO {
     @Override
     public Curso getCursoById(int id) {
         Curso curso = null;
-        try (Connection connection = ConexionMySQL.getConnection();
+        try (Connection connection = Factory.ConexionFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_CURSO_BY_ID)) {
             preparedStatement.setInt(1, id);
             ResultSet rs = preparedStatement.executeQuery();
@@ -52,7 +55,7 @@ public class CursoDAO implements ICursoDAO {
     @Override
     public List<Curso> getAllCursos() {
         List<Curso> cursos = new ArrayList<>();
-        try (Connection connection = ConexionMySQL.getConnection();
+        try (Connection connection = Factory.ConexionFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_CURSOS)) {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
@@ -72,7 +75,7 @@ public class CursoDAO implements ICursoDAO {
     @Override
     public void updateCurso(Curso curso) throws ValidationException {
         validateCurso(curso);
-        try (Connection connection = ConexionMySQL.getConnection();
+        try (Connection connection = Factory.ConexionFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_CURSO_SQL)) {
             preparedStatement.setString(1, curso.getNombre());
             preparedStatement.setInt(2, curso.getPrograma().getId().intValue());
@@ -86,7 +89,7 @@ public class CursoDAO implements ICursoDAO {
 
     @Override
     public void deleteCurso(int id) {
-        try (Connection connection = ConexionMySQL.getConnection();
+        try (Connection connection = Factory.ConexionFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_CURSO_SQL)) {
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();

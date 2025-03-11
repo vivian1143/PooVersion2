@@ -53,7 +53,8 @@ public class ProgramaDAO implements IProgramaDAO {
     @Override
     public List<Programa> getAllProgramas() {
         List<Programa> programas = new ArrayList<>();
-        try (Connection connection = ConexionMySQL.getConnection();
+        try (Connection connection = Factory.ConexionFactory.getConnection();
+
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_PROGRAMAS)) {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
@@ -74,7 +75,8 @@ public class ProgramaDAO implements IProgramaDAO {
     @Override
     public void updatePrograma(Programa programa) throws ValidationException {
         validatePrograma(programa);
-        try (Connection connection = ConexionMySQL.getConnection();
+        try (Connection connection = Factory.ConexionFactory.getConnection();
+
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_PROGRAMA_SQL)) {
             preparedStatement.setString(1, programa.getNombre());
             preparedStatement.setDouble(2, programa.getDuracion());
@@ -89,7 +91,8 @@ public class ProgramaDAO implements IProgramaDAO {
 
     @Override
     public void deletePrograma(int id) {
-        try (Connection connection = ConexionMySQL.getConnection();
+        try (Connection connection = Factory.ConexionFactory.getConnection();
+
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_PROGRAMA_SQL)) {
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();

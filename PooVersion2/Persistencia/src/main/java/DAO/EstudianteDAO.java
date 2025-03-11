@@ -1,9 +1,12 @@
 package DAO;
 
+import Validaciones.Validaciones;
 import Factory.EstudianteFactory;
 import Interfaces.IEstudianteDAO;
 import Modelos.Estudiante;
 import Modelos.Programa;
+
+import javax.management.InvalidAttributeValueException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +19,10 @@ public class EstudianteDAO implements IEstudianteDAO {
     private static final String DELETE_ESTUDIANTE_SQL = "DELETE FROM estudiante WHERE id = ?";
 
     @Override
-    public void addEstudiante(Estudiante estudiante) throws ValidationException {
-        validateEstudiante(estudiante);
-        try (Connection connection = ConexionMySQL.getConnection();
+    public void addEstudiante(Estudiante estudiante) throws ValidationException, InvalidAttributeValueException {
+        Validaciones.validarEstudiante(estudiante);
+        try (Connection connection = Factory.ConexionFactory.getConnection();
+
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_ESTUDIANTE_SQL)) {
             preparedStatement.setString(1, estudiante.getNombre());
             preparedStatement.setString(2, estudiante.getApellidos());
@@ -36,7 +40,8 @@ public class EstudianteDAO implements IEstudianteDAO {
     @Override
     public Estudiante getEstudianteById(int id) {
         Estudiante estudiante = null;
-        try (Connection connection = ConexionMySQL.getConnection();
+        try (Connection connection = Factory.ConexionFactory.getConnection();
+
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ESTUDIANTE_BY_ID)) {
             preparedStatement.setInt(1, id);
             ResultSet rs = preparedStatement.executeQuery();
@@ -60,7 +65,8 @@ public class EstudianteDAO implements IEstudianteDAO {
     @Override
     public List<Estudiante> getAllEstudiantes() {
         List<Estudiante> estudiantes = new ArrayList<>();
-        try (Connection connection = ConexionMySQL.getConnection();
+        try (Connection connection = Factory.ConexionFactory.getConnection();
+
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_ESTUDIANTES)) {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
@@ -86,7 +92,8 @@ public class EstudianteDAO implements IEstudianteDAO {
     @Override
     public void updateEstudiante(Estudiante estudiante) throws ValidationException {
         validateEstudiante(estudiante);
-        try (Connection connection = ConexionMySQL.getConnection();
+        try (Connection connection = Factory.ConexionFactory.getConnection();
+
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ESTUDIANTE_SQL)) {
             preparedStatement.setString(1, estudiante.getNombre());
             preparedStatement.setString(2, estudiante.getApellidos());
@@ -104,7 +111,8 @@ public class EstudianteDAO implements IEstudianteDAO {
 
     @Override
     public void deleteEstudiante(int id) {
-        try (Connection connection = ConexionMySQL.getConnection();
+        try (Connection connection = Factory.ConexionFactory.getConnection();
+
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_ESTUDIANTE_SQL)) {
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();

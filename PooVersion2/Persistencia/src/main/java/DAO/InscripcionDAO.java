@@ -19,7 +19,8 @@ public class InscripcionDAO implements IInscripcionDAO {
     @Override
     public void addInscripcion(Inscripcion inscripcion) throws ValidationException {
         validateInscripcion(inscripcion);
-        try (Connection connection = ConexionMySQL.getConnection();
+        try (Connection connection = Factory.ConexionFactory.getConnection();
+
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_INSCRIPCION_SQL)) {
             preparedStatement.setInt(1, inscripcion.getCurso().getId());
             preparedStatement.setInt(2, inscripcion.getAño());
@@ -34,7 +35,8 @@ public class InscripcionDAO implements IInscripcionDAO {
     @Override
     public Inscripcion getInscripcionById(int id) {
         Inscripcion inscripcion = null;
-        try (Connection connection = ConexionMySQL.getConnection();
+        try (Connection connection = Factory.ConexionFactory.getConnection();
+
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_INSCRIPCION_BY_ID)) {
             preparedStatement.setInt(1, id);
             ResultSet rs = preparedStatement.executeQuery();
@@ -61,7 +63,8 @@ public class InscripcionDAO implements IInscripcionDAO {
     @Override
     public List<Inscripcion> getAllInscripciones() {
         List<Inscripcion> inscripciones = new ArrayList<>();
-        try (Connection connection = ConexionMySQL.getConnection();
+        try (Connection connection = Factory.ConexionFactory.getConnection();
+
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_INSCRIPCIONES)) {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
@@ -83,7 +86,8 @@ public class InscripcionDAO implements IInscripcionDAO {
     @Override
     public void updateInscripcion(Inscripcion inscripcion) throws ValidationException {
         validateInscripcion(inscripcion);
-        try (Connection connection = ConexionMySQL.getConnection();
+        try (Connection connection = Factory.ConexionFactory.getConnection();
+
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_INSCRIPCION_SQL)) {
             preparedStatement.setInt(1, inscripcion.getCurso().getId());
             preparedStatement.setInt(2, inscripcion.getAño());
@@ -98,7 +102,8 @@ public class InscripcionDAO implements IInscripcionDAO {
 
     @Override
     public void deleteInscripcion(int id) {
-        try (Connection connection = ConexionMySQL.getConnection();
+        try (Connection connection = Factory.ConexionFactory.getConnection();
+
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_INSCRIPCION_SQL)) {
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();

@@ -17,7 +17,8 @@ public class FacultadDAO implements IFacultadDAO {
     @Override
     public void addFacultad(Facultad facultad) throws ValidationException {
         validateFacultad(facultad);
-        try (Connection connection = ConexionMySQL.getConnection();
+        try (Connection connection = Factory.ConexionFactory.getConnection();
+
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_FACULTAD_SQL)) {
             preparedStatement.setString(1, facultad.getNombre());
             preparedStatement.setInt(2, facultad.getDecano().getId());
@@ -30,7 +31,8 @@ public class FacultadDAO implements IFacultadDAO {
     @Override
     public Facultad getFacultadById(int id) {
         Facultad facultad = null;
-        try (Connection connection = ConexionMySQL.getConnection();
+        try (Connection connection = Factory.ConexionFactory.getConnection();
+
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_FACULTAD_BY_ID)) {
             preparedStatement.setInt(1, id);
             ResultSet rs = preparedStatement.executeQuery();
@@ -49,7 +51,8 @@ public class FacultadDAO implements IFacultadDAO {
     @Override
     public List<Facultad> getAllFacultades() {
         List<Facultad> facultades = new ArrayList<>();
-        try (Connection connection = ConexionMySQL.getConnection();
+        try (Connection connection = Factory.ConexionFactory.getConnection();
+
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_FACULTADES)) {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
@@ -68,7 +71,8 @@ public class FacultadDAO implements IFacultadDAO {
     @Override
     public void updateFacultad(Facultad facultad) throws ValidationException {
         validateFacultad(facultad);
-        try (Connection connection = ConexionMySQL.getConnection();
+        try (Connection connection = Factory.ConexionFactory.getConnection();
+
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_FACULTAD_SQL)) {
             preparedStatement.setString(1, facultad.getNombre());
             preparedStatement.setInt(2, facultad.getDecano().getId());
@@ -81,7 +85,8 @@ public class FacultadDAO implements IFacultadDAO {
 
     @Override
     public void deleteFacultad(int id) {
-        try (Connection connection = ConexionMySQL.getConnection();
+        try (Connection connection = Factory.ConexionFactory.getConnection();
+
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_FACULTAD_SQL)) {
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();

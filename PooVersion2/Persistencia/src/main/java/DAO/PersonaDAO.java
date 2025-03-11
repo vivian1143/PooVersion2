@@ -19,7 +19,8 @@ public class PersonaDAO implements IPersonaDAO {
     @Override
     public void addPersona(Persona persona) throws ValidationException {
         validatePersona(persona);
-        try (Connection connection = ConexionMySQL.getConnection();
+        try (Connection connection = Factory.ConexionFactory.getConnection();
+
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_PERSONA_SQL)) {
             preparedStatement.setString(1, persona.getNombre());
             preparedStatement.setString(2, persona.getApellidos());
@@ -33,7 +34,8 @@ public class PersonaDAO implements IPersonaDAO {
     @Override
     public Persona getPersonaById(int id) {
         Persona persona = null;
-        try (Connection connection = ConexionMySQL.getConnection();
+        try (Connection connection = Factory.ConexionFactory.getConnection();
+
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_PERSONA_BY_ID)) {
             preparedStatement.setInt(1, id);
             ResultSet rs = preparedStatement.executeQuery();
@@ -52,7 +54,8 @@ public class PersonaDAO implements IPersonaDAO {
     @Override
     public List<Persona> getAllPersonas() {
         List<Persona> personas = new ArrayList<>();
-        try (Connection connection = ConexionMySQL.getConnection();
+        try (Connection connection = Factory.ConexionFactory.getConnection();
+
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_PERSONAS)) {
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
@@ -71,7 +74,8 @@ public class PersonaDAO implements IPersonaDAO {
     @Override
     public void updatePersona(Persona persona) throws ValidationException {
         validatePersona(persona);
-        try (Connection connection = ConexionMySQL.getConnection();
+        try (Connection connection = Factory.ConexionFactory.getConnection();
+
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_PERSONA_SQL)) {
             preparedStatement.setString(1, persona.getNombre());
             preparedStatement.setString(2, persona.getApellidos());
@@ -85,7 +89,8 @@ public class PersonaDAO implements IPersonaDAO {
 
     @Override
     public void deletePersona(int id) {
-        try (Connection connection = ConexionMySQL.getConnection();
+        try (Connection connection = Factory.ConexionFactory.getConnection();
+
              PreparedStatement preparedStatement = connection.prepareStatement(DELETE_PERSONA_SQL)) {
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
