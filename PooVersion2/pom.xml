@@ -16,6 +16,7 @@
         <module>Presentacion</module>
         <module>Main</module>
         <module>GestionTextoPlano</module>
+        <module>Factory</module>
     </modules>
 
 

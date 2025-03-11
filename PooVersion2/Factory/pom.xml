@@ -9,31 +9,12 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>LogicaNegocio</artifactId>
+    <artifactId>Factory</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>avanzadas</groupId>
-            <artifactId>Persistencia</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>avanzadas</groupId>
-            <artifactId>GestionTextoPlano</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>avanzadas</groupId>
-            <artifactId>Factory</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
 
 </project>
