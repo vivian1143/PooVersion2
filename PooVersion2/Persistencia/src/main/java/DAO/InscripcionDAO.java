@@ -1,5 +1,6 @@
 package DAO;
 
+import Factory.InscripcionFactory;
 import Interfaces.IInscripcionDAO;
 import Modelos.Inscripcion;
 import Modelos.Curso;
@@ -42,9 +43,14 @@ public class InscripcionDAO implements IInscripcionDAO {
                 int año = rs.getInt("año");
                 int semestre = rs.getInt("semestre");
                 int estudianteId = rs.getInt("estudiante_id");
-                Curso curso = new CursoDAO().getCursoById(cursoId);
-                Estudiante estudiante = new EstudianteDAO().getEstudianteById(estudianteId);
-                inscripcion = new Inscripcion(id, curso, año, semestre, estudiante);
+                CursoDAO cursoDAO = new CursoDAO();
+                Curso curso = cursoDAO.getCursoById(cursoId);
+
+                EstudianteDAO estudianteDAO = new EstudianteDAO();
+                Estudiante estudiante = estudianteDAO.getEstudianteById(estudianteId);
+
+                // ✅ Usamos la Factory para crear la inscripción
+                inscripcion = InscripcionFactory.crearInscripcion(id, curso, año, semestre, estudiante);
             }
         } catch (SQLException e) {
             printSQLException(e);

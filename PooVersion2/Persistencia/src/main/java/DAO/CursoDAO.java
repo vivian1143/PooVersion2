@@ -1,5 +1,6 @@
 package DAO;
 
+import Factory.CursoFactory;
 import Interfaces.ICursoDAO;
 import Modelos.Curso;
 import Modelos.Programa;
@@ -40,7 +41,7 @@ public class CursoDAO implements ICursoDAO {
                 int programaId = rs.getInt("programa_id");
                 boolean activo = rs.getBoolean("activo");
                 Programa programa = new ProgramaDAO().getProgramaById(programaId);
-                curso = new Curso(id, nombre, programa, activo);
+                curso = CursoFactory.crearCurso(id, nombre, programa, activo);
             }
         } catch (SQLException e) {
             printSQLException(e);
@@ -60,7 +61,7 @@ public class CursoDAO implements ICursoDAO {
                 int programaId = rs.getInt("programa_id");
                 boolean activo = rs.getBoolean("activo");
                 Programa programa = new ProgramaDAO().getProgramaById(programaId);
-                cursos.add(new Curso(id, nombre, programa, activo));
+                cursos.add(CursoFactory.crearCurso(id, nombre, programa, activo));
             }
         } catch (SQLException e) {
             printSQLException(e);

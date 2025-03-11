@@ -1,5 +1,6 @@
 package DAO;
 
+import Factory.EstudianteFactory;
 import Interfaces.IEstudianteDAO;
 import Modelos.Estudiante;
 import Modelos.Programa;
@@ -48,7 +49,7 @@ public class EstudianteDAO implements IEstudianteDAO {
                 boolean activo = rs.getBoolean("activo");
                 double promedio = rs.getDouble("promedio");
                 Programa programa = new ProgramaDAO().getProgramaById(programaId);
-                estudiante = new Estudiante(id, nombre, apellidos, email, codigo, programa, activo, promedio);
+                estudiante = EstudianteFactory.crearEstudiante(id, nombre, apellidos, email, codigo, programa, activo, promedio);
             }
         } catch (SQLException e) {
             printSQLException(e);
@@ -72,7 +73,9 @@ public class EstudianteDAO implements IEstudianteDAO {
                 boolean activo = rs.getBoolean("activo");
                 double promedio = rs.getDouble("promedio");
                 Programa programa = new ProgramaDAO().getProgramaById(programaId);
-                estudiantes.add(new Estudiante(id, nombre, apellidos, email, codigo, programa, activo, promedio));
+                Estudiante estudiante = EstudianteFactory.crearEstudiante(id, nombre, apellidos, email, codigo, programa, activo, promedio);
+
+                estudiantes.add(estudiante);
             }
         } catch (SQLException e) {
             printSQLException(e);

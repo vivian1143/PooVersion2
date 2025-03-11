@@ -1,5 +1,6 @@
 package DAO;
 
+import Factory.ProfesorFactory;
 import Interfaces.IProfesorDAO;
 import Modelos.Profesor;
 import java.sql.*;
@@ -40,7 +41,7 @@ public class ProfesorDAO implements IProfesorDAO {
                 String apellidos = rs.getString("apellidos");
                 String email = rs.getString("email");
                 String tipoContrato = rs.getString("tipoContrato");
-                profesor = new Profesor(id, nombre, apellidos, email, tipoContrato);
+                profesor = ProfesorFactory.crearProfesor(id, nombre, apellidos, email, tipoContrato);
             }
         } catch (SQLException e) {
             printSQLException(e);
@@ -60,7 +61,8 @@ public class ProfesorDAO implements IProfesorDAO {
                 String apellidos = rs.getString("apellidos");
                 String email = rs.getString("email");
                 String tipoContrato = rs.getString("tipoContrato");
-                profesores.add(new Profesor(id, nombre, apellidos, email, tipoContrato));
+                Profesor profesor = ProfesorFactory.crearProfesor(id, nombre, apellidos, email, tipoContrato);
+                profesores.add(profesor);
             }
         } catch (SQLException e) {
             printSQLException(e);
